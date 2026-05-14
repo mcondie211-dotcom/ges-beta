@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hartley Estate — Garden Monitor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#f4f0e8;--ink:#2a2218;--ink2:rgba(42,34,24,0.5);--ink3:rgba(42,34,24,0.13);
+  --cyan:#2a9d8f;--gold:#b8962e;
+}
+body{background:var(--cream);font-family:'Cormorant Garamond',serif;color:var(--ink);min-height:100vh}
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 2rem;border-bottom:0.5px solid var(--ink3);
+  background:rgba(244,240,232,0.96);position:sticky;top:0;z-index:80;backdrop-filter:blur(8px);
+}
+.etitle{font-size:1rem;font-weight:300;letter-spacing:0.14em;text-transform:uppercase}
+.etitle strong{font-weight:600}
+.hright{display:flex;align-items:center;gap:1.25rem}
+.lpill{
+  display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:0.1em;color:var(--cyan);
+  border:0.5px solid rgba(42,157,143,0.35);background:rgba(42,157,143,0.07);
+  padding:5px 12px;border-radius:100px;
+}
+.ldot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:lp 2.2s ease-in-out infinite}
+@keyframes lp{0%,100%{opacity:1}50%{opacity:0.3}}
+.htime{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink2);letter-spacing:0.06em}
+
+.hero-wrap{position:relative;width:100%;overflow:hidden;background:#c8dce8}
+
+.hero-label{
+  position:absolute;bottom:2rem;left:2.5rem;
+  pointer-events:none;z-index:20;
+}
+.hley{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(42,34,24,0.55);margin-bottom:5px}
+.hlt{font-size:clamp(1.8rem,4vw,3rem);font-weight:300;font-style:italic;color:var(--ink);line-height:1.05}
+.hlt strong{font-weight:600;font-style:normal}
+
+.ztip{
+  position:absolute;pointer-events:none;z-index:60;
+  background:rgba(244,240,232,0.97);border:0.5px solid rgba(42,34,24,0.2);
+  border-radius:10px;padding:10px 14px;min-width:160px;
+  box-shadow:0 4px 24px rgba(42,34,24,0.1);opacity:0;transition:opacity 0.2s;font-size:13px;
+}
+.ztip.show{opacity:1}
+.ztn{font-weight:600;font-size:14px;margin-bottom:3px}
+.zts{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink2);margin-top:2px}
+.ztb{
+  display:inline-block;margin-top:7px;font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:100px;
+  background:rgba(42,157,143,0.1);color:var(--cyan);border:0.5px solid rgba(42,157,143,0.3);
+}
+
+.overlay{position:fixed;inset:0;background:rgba(42,34,24,0.18);z-index:90;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.overlay.show{opacity:1;pointer-events:all}
+.panel{
+  position:fixed;top:0;right:-460px;width:420px;height:100%;
+  background:var(--cream);border-left:0.5px solid var(--ink3);
+  z-index:100;overflow-y:auto;transition:right 0.42s cubic-bezier(0.16,1,0.3,1);
+  box-shadow:-6px 0 32px rgba(42,34,24,0.08);
+}
+.panel.open{right:0}
+.pcls{
+  position:absolute;top:1rem;right:1rem;width:30px;height:30px;border-radius:50%;
+  border:0.5px solid var(--ink3);background:none;font-size:18px;cursor:pointer;
+  color:var(--ink2);display:flex;align-items:center;justify-content:center;transition:all 0.15s;
+}
+.pcls:hover{border-color:var(--ink);color:var(--ink)}
+.phero{width:100%;height:200px;display:flex;align-items:flex-end;padding:1.25rem 1.5rem}
+.peye{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:4px}
+.pttl{font-size:1.9rem;font-weight:300;font-style:italic;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,0.25)}
+.pbody{padding:1.5rem}
+.pchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.25rem}
+.chip{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:100px}
+.chipg{background:rgba(42,157,143,0.1);color:var(--cyan);border:0.5px solid rgba(42,157,143,0.3)}
+.chipa{background:rgba(184,150,46,0.1);color:var(--gold);border:0.5px solid rgba(184,150,46,0.3)}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.metric{background:rgba(42,34,24,0.04);border:0.5px solid var(--ink3);border-radius:8px;padding:14px 14px 12px}
+.mlbl{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+.mval{font-size:1.55rem;font-weight:300;color:var(--ink);line-height:1}
+.mval span{font-size:0.7rem;color:var(--ink2)}
+.msub{font-size:11px;color:var(--ink2);font-style:italic;margin-top:3px}
+.mbar{height:2px;background:rgba(42,34,24,0.08);border-radius:2px;margin-top:8px}
+.mfill{height:100%;border-radius:2px;transition:width 1s ease}
+.plogt{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink2);padding-bottom:0.5rem;border-bottom:0.5px solid var(--ink3);margin-bottom:0.5rem}
+.logr{display:flex;gap:10px;padding:0.55rem 0;border-bottom:0.5px solid rgba(42,34,24,0.06);align-items:flex-start}
+.logt{font-family:'DM Mono',monospace;font-size:10px;color:var(--ink2);min-width:48px;padding-top:1px}
+.logd{width:5px;height:5px;border-radius:50%;background:var(--cyan);margin-top:5px;flex-shrink:0}
+.logtx{font-size:13px;color:var(--ink);font-style:italic;line-height:1.5}
+
+footer{text-align:center;padding:1.5rem;font-size:11px;color:var(--ink2);font-style:italic;letter-spacing:0.08em;border-top:0.5px solid var(--ink3)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="etitle"><strong>The Hartley Estate</strong> &ensp;·&ensp; Garden Monitor</div>
+  <div class="hright">
+    <div class="lpill"><div class="ldot"></div>Live</div>
+    <div class="htime" id="htime"></div>
+  </div>
+</header>
+
+<div class="hero-wrap">
+  <div class="ztip" id="ztip">
+    <div class="ztn" id="ztn"></div>
+    <div class="zts" id="zts1"></div>
+    <div class="zts" id="zts2"></div>
+    <div class="ztb" id="ztb"></div>
+  </div>
+
+  <svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block">
+    <defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#b8cede"/>
+        <stop offset="55%" stop-color="#d4e4ec"/>
+        <stop offset="100%" stop-color="#dce8e0"/>
+      </linearGradient>
+      <linearGradient id="gnd" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7aaa6a"/>
+        <stop offset="100%" stop-color="#5a8a4a"/>
+      </linearGradient>
+      <linearGradient id="pondg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#88c0d8"/>
+        <stop offset="100%" stop-color="#3a7a98"/>
+      </linearGradient>
+      <linearGradient id="roofg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#c8b890"/>
+        <stop offset="100%" stop-color="#a09070"/>
+      </linearGradient>
+      <linearGradient id="wallg" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#ece0c8"/>
+        <stop offset="100%" stop-color="#d8cca8"/>
+      </linearGradient>
+      <linearGradient id="wallside" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#c8b898"/>
+        <stop offset="100%" stop-color="#b0a080"/>
+      </linearGradient>
+      <filter id="wc" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="12"/>
+      </filter>
+      <filter id="wcsm" x="-10%" y="-10%" width="120%" height="120%">
+        <feGaussianBlur stdDeviation="5"/>
+      </filter>
+      <filter id="sk" x="-4%" y="-4%" width="108%" height="108%">
+        <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="2" result="n"/>
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5"/>
+      </filter>
+      <radialGradient id="vig" cx="50%" cy="55%" r="65%">
+        <stop offset="0%" stop-color="transparent"/>
+        <stop offset="100%" stop-color="rgba(42,34,24,0.14)"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Sky -->
+    <rect width="1200" height="700" fill="url(#sky)"/>
+    <!-- Clouds -->
+    <ellipse cx="180" cy="110" rx="170" ry="38" fill="rgba(255,255,255,0.42)" filter="url(#wc)"/>
+    <ellipse cx="880" cy="90" rx="200" ry="32" fill="rgba(255,255,255,0.36)" filter="url(#wc)"/>
+    <ellipse cx="560" cy="130" rx="140" ry="26" fill="rgba(255,255,255,0.28)" filter="url(#wc)"/>
+    <!-- Horizon haze -->
+    <rect x="0" y="250" width="1200" height="40" fill="rgba(220,235,228,0.4)" filter="url(#wc)"/>
+
+    <!-- Ground plane — recedes to horizon at top-centre -->
+    <polygon points="0,700 1200,700 1200,330 600,225 0,330" fill="url(#gnd)"/>
+
+    <!-- Ground tonal variation -->
+    <ellipse cx="420" cy="530" rx="340" ry="130" fill="rgba(110,170,85,0.22)" filter="url(#wc)"/>
+    <ellipse cx="820" cy="490" rx="300" ry="110" fill="rgba(90,150,65,0.18)" filter="url(#wc)"/>
+
+    <!-- ── BOUNDARY HEDGES ── -->
+    <!-- Left hedge top + face -->
+    <polygon points="50,660 130,660 145,295 65,295" fill="#3a6a28" filter="url(#sk)"/>
+    <polygon points="50,295 130,295 140,278 60,278" fill="#5a9040" filter="url(#wcsm)"/>
+    <polygon points="50,295 130,295 140,278 60,278" fill="#6aaa4a" opacity="0.6"/>
+    <!-- Right hedge -->
+    <polygon points="1070,640 1150,640 1160,295 1080,295" fill="#3a6a28" filter="url(#sk)"/>
+    <polygon points="1070,295 1150,295 1160,278 1080,278" fill="#5a9040" filter="url(#wcsm)"/>
+    <!-- Back hedge -->
+    <polygon points="60,278 1160,278 1165,262 55,262" fill="#6aaa4a" filter="url(#wcsm)"/>
+    <polygon points="60,278 1160,278 1165,262 55,262" fill="#4a8030" opacity="0.6"/>
+
+    <!-- Horizon tree line -->
+    <ellipse cx="65" cy="285" rx="68" ry="82" fill="#4a7830" filter="url(#wc)"/>
+    <ellipse cx="40" cy="275" rx="50" ry="65" fill="#3a6828" filter="url(#wc)"/>
+    <ellipse cx="1145" cy="275" rx="62" ry="75" fill="#4a7830" filter="url(#wc)"/>
+
+    <!-- ── PATHS ── -->
+    <!-- Main path: driveway from bottom up to house -->
+    <polygon points="545,700 655,700 672,500 558,500" fill="#c8b898" opacity="0.75" filter="url(#sk)"/>
+    <polygon points="550,700 650,700 666,500 564,500" fill="#d4c4a8" opacity="0.45"/>
+    <!-- Patio lines -->
+    <line x1="566" y1="600" x2="570" y2="500" stroke="rgba(160,140,100,0.2)" stroke-width="1"/>
+    <line x1="590" y1="600" x2="594" y2="500" stroke="rgba(160,140,100,0.2)" stroke-width="1"/>
+    <line x1="614" y1="600" x2="618" y2="500" stroke="rgba(160,140,100,0.2)" stroke-width="1"/>
+    <line x1="638" y1="600" x2="642" y2="500" stroke="rgba(160,140,100,0.2)" stroke-width="1"/>
+
+    <!-- Side path to veg -->
+    <polygon points="770,510 840,510 870,390 800,390" fill="#c8b898" opacity="0.6" filter="url(#sk)"/>
+
+    <!-- Terrace in front of house -->
+    <polygon points="420,500 780,500 800,450 400,450" fill="#d4c4a8" opacity="0.85" filter="url(#sk)"/>
+    <g stroke="rgba(160,140,100,0.2)" stroke-width="0.8" fill="none">
+      <line x1="460" y1="500" x2="478" y2="450"/>
+      <line x1="520" y1="500" x2="538" y2="450"/>
+      <line x1="580" y1="500" x2="598" y2="450"/>
+      <line x1="640" y1="500" x2="658" y2="450"/>
+      <line x1="700" y1="500" x2="718" y2="450"/>
+      <line x1="760" y1="500" x2="778" y2="450"/>
+    </g>
+
+    <!-- ── LAWN STRIPES ── -->
+    <g opacity="0.28">
+      <polygon points="140,700 545,700 560,640 120,640" fill="#96cc7a"/>
+      <polygon points="140,640 545,640 558,580 122,580" fill="rgba(255,255,255,0.18)"/>
+      <polygon points="140,580 545,580 556,520 124,520" fill="#96cc7a"/>
+      <polygon points="140,520 545,520 554,460 126,460" fill="rgba(255,255,255,0.15)"/>
+      <polygon points="140,460 545,460 552,410 128,410" fill="#96cc7a"/>
+    </g>
+    <!-- Right lawn -->
+    <g opacity="0.22">
+      <polygon points="800,610 1080,610 1095,555 815,555" fill="#96cc7a"/>
+      <polygon points="800,555 1080,555 1093,500 817,500" fill="rgba(255,255,255,0.15)"/>
+      <polygon points="800,500 1080,500 1091,450 819,450" fill="#96cc7a"/>
+    </g>
+
+    <!-- ── WATERCOLOUR ZONE WASHES ── -->
+    <ellipse cx="250" cy="440" rx="145" ry="90" fill="rgba(60,120,160,0.28)" filter="url(#wc)"/>
+    <ellipse cx="325" cy="325" rx="112" ry="68" fill="rgba(196,150,90,0.26)" filter="url(#wc)"/>
+    <ellipse cx="920" cy="395" rx="125" ry="75" fill="rgba(70,130,50,0.28)" filter="url(#wc)"/>
+    <ellipse cx="380" cy="560" rx="200" ry="80" fill="rgba(100,170,75,0.15)" filter="url(#wc)"/>
+
+
+    <!-- ── ZONE POND ── -->
+    <g style="cursor:pointer" onmouseenter="ht(event,'pond')" onmouseleave="hh()" onclick="op('pond')">
+      <ellipse cx="248" cy="448" rx="115" ry="65" fill="url(#pondg)" opacity="0.88" filter="url(#sk)"/>
+      <ellipse cx="248" cy="448" rx="115" ry="65" fill="none" stroke="rgba(60,120,160,0.4)" stroke-width="1.5"/>
+      <!-- Water shimmer -->
+      <ellipse cx="225" cy="432" rx="42" ry="10" fill="rgba(255,255,255,0.24)" transform="rotate(-8 225 432)"/>
+      <ellipse cx="265" cy="452" rx="30" ry="7" fill="rgba(255,255,255,0.18)" transform="rotate(6 265 452)"/>
+      <!-- Koi -->
+      <ellipse cx="225" cy="444" rx="15" ry="5" fill="rgba(220,85,45,0.72)" transform="rotate(-12 225 444)"/>
+      <ellipse cx="262" cy="458" rx="13" ry="4" fill="rgba(220,85,45,0.62)" transform="rotate(14 262 458)"/>
+      <ellipse cx="248" cy="432" rx="11" ry="4" fill="rgba(255,185,45,0.58)" transform="rotate(-4 248 432)"/>
+      <!-- Rocks top + side isometric -->
+      <ellipse cx="148" cy="452" rx="20" ry="10" fill="#b4a07a" filter="url(#sk)"/>
+      <polygon points="138,452 158,452 160,468 136,468" fill="#9a8860"/>
+      <ellipse cx="340" cy="432" rx="16" ry="9" fill="#b4a07a" filter="url(#sk)"/>
+      <polygon points="332,432 348,432 350,446 330,446" fill="#9a8860"/>
+      <!-- Pond plants -->
+      <g fill="#5a8840" opacity="0.9">
+        <polygon points="320,385 326,428 332,385"/>
+        <polygon points="330,378 335,420 340,378"/>
+        <polygon points="158,410 164,458 170,410"/>
+        <polygon points="166,405 171,450 176,405"/>
+      </g>
+      <ellipse cx="330" cy="376" rx="7" ry="9" fill="rgba(120,75,160,0.78)"/>
+      <!-- Sensor -->
+      <circle cx="248" cy="408" r="6" fill="#2a9d8f" opacity="0.92"/>
+      <circle cx="248" cy="408" r="6" fill="none" stroke="#2a9d8f" stroke-width="1.5">
+        <animate attributeName="r" from="6" to="20" dur="2.1s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.55" to="0" dur="2.1s" repeatCount="indefinite"/>
+      </circle>
+      <rect x="186" y="498" width="120" height="22" rx="4" fill="rgba(244,240,232,0.9)"/>
+      <text x="246" y="513" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="rgba(42,34,24,0.82)">The Pond</text>
+    </g>
+
+
+    <!-- ── ZONE CHICKEN RUN ── -->
+    <g style="cursor:pointer" onmouseenter="ht(event,'chickens')" onmouseleave="hh()" onclick="op('chickens')">
+      <polygon points="212,298 425,298 438,365 200,365" fill="#c8a860" opacity="0.52" filter="url(#sk)"/>
+      <!-- Fence top -->
+      <polygon points="212,298 425,298 425,282 212,282" fill="#7a9058" opacity="0.72"/>
+      <!-- Posts -->
+      <g fill="#8a6e48" opacity="0.82">
+        <rect x="212" y="278" width="5" height="87" transform="skewY(-4)"/>
+        <rect x="264" y="276" width="5" height="89" transform="skewY(-4)"/>
+        <rect x="316" y="274" width="5" height="91" transform="skewY(-4)"/>
+        <rect x="368" y="272" width="5" height="93" transform="skewY(-4)"/>
+        <rect x="418" y="270" width="5" height="95" transform="skewY(-4)"/>
+      </g>
+      <!-- Mesh -->
+      <polygon points="212,298 425,298 438,365 200,365" fill="none" stroke="rgba(120,100,55,0.25)" stroke-width="0.8" stroke-dasharray="5 4"/>
+      <!-- Coop isometric -->
+      <polygon points="365,282 428,282 438,315 375,315" fill="#c8a868"/>
+      <polygon points="365,315 438,315 438,360 365,360" fill="#b09050"/>
+      <polygon points="365,282 365,360 348,348 348,272" fill="#9a7838"/>
+      <polygon points="348,272 365,282 428,282 410,272" fill="#d4b870"/>
+      <!-- Chickens -->
+      <ellipse cx="272" cy="342" rx="15" ry="10" fill="#eadfc0" filter="url(#sk)"/>
+      <circle cx="264" cy="333" r="8" fill="#eadfc0" filter="url(#sk)"/>
+      <ellipse cx="314" cy="352" rx="14" ry="10" fill="#c8b488" filter="url(#sk)"/>
+      <circle cx="307" cy="343" r="7" fill="#c8b488" filter="url(#sk)"/>
+      <ellipse cx="294" cy="325" rx="12" ry="8" fill="#d8c8a5" filter="url(#sk)"/>
+      <!-- Sensor -->
+      <circle cx="314" cy="298" r="6" fill="#2a9d8f" opacity="0.92"/>
+      <circle cx="314" cy="298" r="6" fill="none" stroke="#2a9d8f" stroke-width="1.5">
+        <animate attributeName="r" from="6" to="20" dur="2.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.55" to="0" dur="2.5s" repeatCount="indefinite"/>
+      </circle>
+      <rect x="246" y="370" width="136" height="22" rx="4" fill="rgba(244,240,232,0.9)"/>
+      <text x="314" y="385" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="rgba(42,34,24,0.82)">Chicken Run</text>
+    </g>
+
+
+    <!-- ── HOUSE ── -->
+    <!-- Shadow -->
+    <ellipse cx="630" cy="510" rx="230" ry="28" fill="rgba(42,34,24,0.09)" filter="url(#wcsm)"/>
+    <!-- Front wall -->
+    <polygon points="415,450 785,450 785,540 415,540" fill="url(#wallg)"/>
+    <!-- Side wall -->
+    <polygon points="785,450 875,398 875,490 785,540" fill="url(#wallside)"/>
+    <!-- Roof main face -->
+    <polygon points="415,450 785,450 875,398 505,398" fill="url(#roofg)"/>
+    <!-- Roof side face (shadowed) -->
+    <polygon points="505,398 875,398 875,390 505,390" fill="#c0a878" opacity="0.9"/>
+    <!-- Chimney -->
+    <polygon points="685,388 716,388 718,360 687,360" fill="#b09870"/>
+    <polygon points="716,388 738,374 740,346 718,360" fill="#9a8058"/>
+    <rect x="683" y="352" width="38" height="9" fill="#988058" rx="1"/>
+    <!-- Dormer -->
+    <polygon points="598,398 662,398 662,375 598,375" fill="#ece0c8"/>
+    <polygon points="578,375 598,398 598,375" fill="#c0a878"/>
+    <polygon points="662,398 682,375 662,375" fill="#c0a878"/>
+    <rect x="606" y="377" width="48" height="20" rx="1" fill="rgba(140,178,208,0.52)"/>
+    <!-- Front windows -->
+    <g fill="rgba(135,178,208,0.58)" stroke="rgba(255,255,255,0.42)" stroke-width="0.5">
+      <rect x="442" y="463" width="46" height="38" rx="2"/>
+      <rect x="512" y="463" width="46" height="38" rx="2"/>
+      <rect x="642" y="463" width="46" height="38" rx="2"/>
+      <rect x="712" y="463" width="46" height="38" rx="2"/>
+    </g>
+    <g stroke="rgba(255,255,255,0.48)" stroke-width="0.8" fill="none">
+      <line x1="465" y1="463" x2="465" y2="501"/><line x1="442" y1="482" x2="488" y2="482"/>
+      <line x1="535" y1="463" x2="535" y2="501"/><line x1="512" y1="482" x2="558" y2="482"/>
+    </g>
+    <!-- Door -->
+    <rect x="575" y="477" width="38" height="58" rx="2" fill="#9a7848" stroke="rgba(42,34,24,0.2)" stroke-width="0.5"/>
+    <circle cx="609" cy="507" r="3" fill="#c8a840"/>
+    <!-- Side windows -->
+    <g fill="rgba(120,160,190,0.45)" stroke="rgba(255,255,255,0.3)" stroke-width="0.5">
+      <polygon points="800,413 838,413 840,448 800,448"/>
+      <polygon points="840,413 860,403 862,438 842,448"/>
+    </g>
+
+
+    <!-- ── ZONE VEG GARDEN ── -->
+    <g style="cursor:pointer" onmouseenter="ht(event,'veg')" onmouseleave="hh()" onclick="op('veg')">
+      <!-- Raised beds top -->
+      <polygon points="835,358 988,358 998,422 845,422" fill="#5a7838" opacity="0.82" filter="url(#sk)"/>
+      <!-- Bed walls -->
+      <polygon points="835,358 845,422 845,438 835,372" fill="#485a28"/>
+      <polygon points="988,358 998,422 998,438 988,372" fill="#485a28"/>
+      <polygon points="845,438 998,438 998,422 845,422" fill="#6a7040"/>
+      <!-- Bed partition -->
+      <line x1="912" y1="358" x2="921" y2="422" stroke="rgba(72,90,40,0.6)" stroke-width="2.5"/>
+      <line x1="835" y1="390" x2="988" y2="390" stroke="rgba(72,90,40,0.45)" stroke-width="1.5"/>
+      <!-- Plant rows -->
+      <g stroke="rgba(90,155,55,0.58)" stroke-width="0.9" fill="none">
+        <line x1="845" y1="365" x2="910" y2="365"/>
+        <line x1="846" y1="374" x2="911" y2="374"/>
+        <line x1="847" y1="383" x2="912" y2="383"/>
+        <line x1="922" y1="363" x2="986" y2="363"/>
+        <line x1="923" y1="372" x2="987" y2="372"/>
+        <line x1="924" y1="381" x2="988" y2="381"/>
+        <line x1="848" y1="398" x2="913" y2="398"/>
+        <line x1="849" y1="407" x2="914" y2="407"/>
+        <line x1="925" y1="396" x2="989" y2="396"/>
+        <line x1="926" y1="405" x2="990" y2="405"/>
+      </g>
+      <!-- Plants -->
+      <g fill="rgba(75,140,48,0.78)" filter="url(#wcsm)">
+        <circle cx="854" cy="362" r="5"/><circle cx="866" cy="362" r="5"/>
+        <circle cx="878" cy="362" r="5"/><circle cx="890" cy="362" r="5"/>
+        <circle cx="930" cy="360" r="5"/><circle cx="942" cy="360" r="5"/>
+        <circle cx="954" cy="360" r="5"/>
+      </g>
+      <!-- Drip lines -->
+      <line x1="868" y1="347" x2="868" y2="358" stroke="rgba(100,165,210,0.55)" stroke-width="1.5" stroke-dasharray="2 2"/>
+      <line x1="940" y1="347" x2="940" y2="358" stroke="rgba(100,165,210,0.55)" stroke-width="1.5" stroke-dasharray="2 2"/>
+      <!-- Sensor -->
+      <circle cx="985" cy="368" r="6" fill="#2a9d8f" opacity="0.92"/>
+      <circle cx="985" cy="368" r="6" fill="none" stroke="#2a9d8f" stroke-width="1.5">
+        <animate attributeName="r" from="6" to="20" dur="1.9s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.55" to="0" dur="1.9s" repeatCount="indefinite"/>
+      </circle>
+      <rect x="858" y="443" width="150" height="22" rx="4" fill="rgba(244,240,232,0.9)"/>
+      <text x="933" y="458" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="rgba(42,34,24,0.82)">Kitchen Garden</text>
+    </g>
+
+
+    <!-- ── ZONE LAWN ── -->
+    <g style="cursor:pointer" onmouseenter="ht(event,'lawn')" onmouseleave="hh()" onclick="op('lawn')">
+      <polygon points="145,680 545,680 560,490 128,490" fill="transparent"/>
+      <circle cx="350" cy="580" r="6" fill="#2a9d8f" opacity="0.92"/>
+      <circle cx="350" cy="580" r="6" fill="none" stroke="#2a9d8f" stroke-width="1.5">
+        <animate attributeName="r" from="6" to="20" dur="2.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.55" to="0" dur="2.8s" repeatCount="indefinite"/>
+      </circle>
+      <rect x="268" y="592" width="138" height="22" rx="4" fill="rgba(244,240,232,0.9)"/>
+      <text x="337" y="607" text-anchor="middle" font-family="Cormorant Garamond,serif" font-size="14" font-style="italic" fill="rgba(42,34,24,0.82)">Lawn &amp; Borders</text>
+    </g>
+
+
+    <!-- ── BORDER PLANTING ── -->
+    <g fill="#5a8838" opacity="0.7" filter="url(#wcsm)">
+      <ellipse cx="150" cy="500" rx="14" ry="22"/><ellipse cx="172" cy="492" rx="12" ry="18"/>
+      <ellipse cx="192" cy="502" rx="14" ry="20"/><ellipse cx="214" cy="494" rx="11" ry="17"/>
+    </g>
+    <g fill="rgba(210,115,115,0.55)">
+      <circle cx="158" cy="480" r="5"/><circle cx="180" cy="473" r="4"/><circle cx="200" cy="480" r="5"/>
+    </g>
+    <g fill="#5a8838" opacity="0.65" filter="url(#wcsm)">
+      <ellipse cx="1000" cy="498" rx="13" ry="20"/><ellipse cx="1020" cy="490" rx="12" ry="18"/>
+      <ellipse cx="1038" cy="498" rx="11" ry="17"/>
+    </g>
+
+    <!-- ── TREES ── -->
+    <!-- Left group -->
+    <g transform="translate(118,408)">
+      <ellipse cx="0" cy="5" rx="14" ry="6" fill="rgba(42,34,24,0.1)" filter="url(#wcsm)"/>
+      <polygon points="-24,-60 24,-60 12,0 -12,0" fill="#4a7a35" filter="url(#sk)"/>
+      <polygon points="-20,-60 20,-60 10,-42 -10,-42" fill="#5a8a42"/>
+      <polygon points="-14,-80 14,-80 8,-60 -8,-60" fill="#6a9a50"/>
+      <rect x="-5" y="0" width="10" height="20" fill="#7a5528"/>
+    </g>
+    <g transform="translate(93,428)">
+      <polygon points="-17,-48 17,-48 9,0 -9,0" fill="#3a6a25" filter="url(#sk)"/>
+      <polygon points="-13,-65 13,-65 7,-48 -7,-48" fill="#4a7a32"/>
+      <rect x="-4" y="0" width="8" height="16" fill="#7a5528"/>
+    </g>
+    <!-- Right group -->
+    <g transform="translate(1082,418)">
+      <ellipse cx="0" cy="5" rx="15" ry="6" fill="rgba(42,34,24,0.1)" filter="url(#wcsm)"/>
+      <polygon points="-26,-65 26,-65 14,0 -14,0" fill="#4a7a35" filter="url(#sk)"/>
+      <polygon points="-22,-65 22,-65 12,-45 -12,-45" fill="#5a8a42"/>
+      <polygon points="-16,-85 16,-85 8,-65 -8,-65" fill="#6a9a50"/>
+      <rect x="-5" y="0" width="10" height="20" fill="#7a5528"/>
+    </g>
+    <!-- Near foreground tree -->
+    <g transform="translate(720,648)">
+      <ellipse cx="0" cy="6" rx="18" ry="7" fill="rgba(42,34,24,0.1)" filter="url(#wcsm)"/>
+      <polygon points="-28,-68 28,-68 15,0 -15,0" fill="#5a8a42" filter="url(#sk)"/>
+      <polygon points="-24,-68 24,-68 14,-48 -14,-48" fill="#6a9a50"/>
+      <polygon points="-17,-90 17,-90 10,-68 -10,-68" fill="#7aaa5a"/>
+      <rect x="-6" y="0" width="12" height="24" fill="#6a4820"/>
+    </g>
+
+    <!-- Vignette -->
+    <rect width="1200" height="700" fill="url(#vig)"/>
+
+    <!-- Drone indicator -->
+    <g transform="translate(1130,76)" opacity="0.48">
+      <circle r="26" fill="none" stroke="rgba(42,34,24,0.28)" stroke-width="0.5" stroke-dasharray="4 3"/>
+      <text y="-10" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(42,34,24,0.65)" letter-spacing="1">DRONE</text>
+      <text y="4" text-anchor="middle" font-family="'DM Mono',monospace" font-size="8" fill="rgba(42,34,24,0.65)" letter-spacing="1">VIEW</text>
+      <text y="18" text-anchor="middle" font-family="'DM Mono',monospace" font-size="7" fill="rgba(42,34,24,0.45)">45° NW</text>
+    </g>
+
+  </svg>
+
+  <div class="hero-label">
+    <div class="hley">Click any zone to explore · All systems nominal</div>
+    <div class="hlt">Your garden,<br><strong>always tended.</strong></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="panel">
+  <button class="pcls" onclick="closePanel()">×</button>
+  <div class="phero" id="phero"></div>
+  <div class="pbody" id="pbody"></div>
+</div>
+
+<footer>The Garden Ecology System &ensp;·&ensp; Precision Design. Logical Ecology. Works for you. &ensp;·&ensp; <span id="ftime"></span></footer>
+
+<script>
+const Z={
+  pond:{name:'The Pond',eye:'Water & wildlife',s1:'Water level: 78%',s2:'pH: 7.2  ·  Temp: 14.3°C',badge:'All nominal',bg:'linear-gradient(150deg,#4a8fa8,#1a5f6e)',chips:[{l:'All systems nominal',c:'chipg'},{l:'Auto top-up active',c:'chipa'}],metrics:[{l:'Water level',v:'78',u:'%',s:'Optimal 70–90%',f:78,c:'#2a9d8f'},{l:'pH balance',v:'7.2',u:'',s:'Ideal for koi',f:60,c:'#2a9d8f'},{l:'Water temp',v:'14.3',u:'°C',s:'Seasonal normal',f:45,c:'#6b8fa8'},{l:'Top-ups today',v:'2',u:'×',s:'Last at 11:24',f:20,c:'#b8962e'}],log:[{t:'14:02',x:'pH confirmed stable — no action required'},{t:'11:24',x:'Auto top-up activated — level restored in 4 mins'},{t:'09:15',x:'Water level dipped to 64% — top-up triggered'},{t:'06:30',x:'Overnight check complete — koi active and healthy'}]},
+  chickens:{name:'Chicken Run',eye:'Poultry & welfare',s1:'Flock: 6 hens present',s2:'Feed: 72%  ·  Water: full',badge:'Flock healthy',bg:'linear-gradient(150deg,#c4927a,#7a4a2a)',chips:[{l:'Flock healthy',c:'chipg'},{l:'Gate secured',c:'chipg'}],metrics:[{l:'Hens present',v:'6',u:'',s:'All accounted for',f:100,c:'#2a9d8f'},{l:'Feed level',v:'72',u:'%',s:'Refill in ~4 days',f:72,c:'#b8962e'},{l:'Water drinker',v:'Full',u:'',s:'Auto-topped 08:00',f:95,c:'#2a9d8f'},{l:'Run temp',v:'16.2',u:'°C',s:'Comfortable',f:55,c:'#6b8fa8'}],log:[{t:'08:00',x:'Water drinker auto-topped up'},{t:'07:30',x:'Hatch opened — all 6 hens out in run'},{t:'Yesterday',x:'Egg count: 5 collected — all healthy'},{t:'Last week',x:'Weekly welfare check completed'}]},
+  veg:{name:'Kitchen Garden',eye:'Raised beds & irrigation',s1:'Soil moisture: 68%',s2:'Next water: 06:30 tomorrow',badge:'Crops thriving',bg:'linear-gradient(150deg,#5a8a4a,#2d5c20)',chips:[{l:'Irrigation scheduled',c:'chipa'},{l:'Crops thriving',c:'chipg'}],metrics:[{l:'Soil moisture',v:'68',u:'%',s:'Beds 1 & 2',f:68,c:'#2a9d8f'},{l:'Next watering',v:'06:30',u:'',s:'Tomorrow morning',f:0,c:'#6b8fa8'},{l:'Rainfall skip',v:'Yes',u:'',s:'4.2mm last night',f:100,c:'#b8962e'},{l:'Beds active',v:'4',u:'/4',s:'All in production',f:100,c:'#2a9d8f'}],log:[{t:'06:30',x:'Irrigation skipped — 4.2mm rainfall detected'},{t:'Yesterday',x:'Tomatoes, courgettes and beans looking strong'},{t:'2 days',x:'Drip irrigation serviced — all emitters clear'},{t:'This week',x:'Lettuce beds harvested and replanted'}]},
+  lawn:{name:'Lawn & Borders',eye:'Turf management',s1:'Lawn health: excellent',s2:'Last mow: 3 days ago',badge:'No alerts',bg:'linear-gradient(150deg,#7daa6e,#3a6a2a)',chips:[{l:'Condition: excellent',c:'chipg'},{l:'Borders in season',c:'chipg'}],metrics:[{l:'Lawn health',v:'94',u:'%',s:'Excellent condition',f:94,c:'#2a9d8f'},{l:'Last mow',v:'3',u:' days',s:'Next due Friday',f:60,c:'#b8962e'},{l:'Soil moisture',v:'55',u:'%',s:'Well balanced',f:55,c:'#2a9d8f'},{l:'Weed alerts',v:'0',u:'',s:'Clear this week',f:100,c:'#2a9d8f'}],log:[{t:'Mon',x:'Lawn mowed and edges trimmed — striped finish'},{t:'Mon',x:'Rose borders dead-headed and fed'},{t:'Last wk',x:'Seasonal feed applied across all lawns'},{t:'Last wk',x:'New perennials planted in south border'}]}
+};
+
+function ht(e,id){
+  const z=Z[id];if(!z)return;
+  const tip=document.getElementById('ztip');
+  document.getElementById('ztn').textContent=z.name;
+  document.getElementById('zts1').textContent=z.s1;
+  document.getElementById('zts2').textContent=z.s2;
+  document.getElementById('ztb').textContent=z.badge;
+  const hw=tip.closest('.hero-wrap');
+  const r=hw?hw.getBoundingClientRect():{left:0,top:0};
+  tip.style.left=(e.clientX-r.left+14)+'px';
+  tip.style.top=(e.clientY-r.top-10)+'px';
+  tip.classList.add('show');
+}
+function hh(){document.getElementById('ztip').classList.remove('show')}
+
+function op(id){
+  const z=Z[id];if(!z)return;
+  document.getElementById('phero').innerHTML=`<div style="width:100%;height:100%;background:${z.bg};display:flex;flex-direction:column;justify-content:flex-end;padding:1.25rem 1.5rem"><div class="peye">${z.eye}</div><div class="pttl">${z.name}</div></div>`;
+  const chips=z.chips.map(c=>`<span class="chip ${c.c}">${c.l}</span>`).join('');
+  const metrics=z.metrics.map(m=>`<div class="metric"><div class="mlbl">${m.l}</div><div class="mval">${m.v}<span> ${m.u}</span></div><div class="msub">${m.s}</div><div class="mbar"><div class="mfill" style="width:${m.f}%;background:${m.c}"></div></div></div>`).join('');
+  const log=z.log.map(e=>`<div class="logr"><div class="logt">${e.t}</div><div class="logd"></div><div class="logtx">${e.x}</div></div>`).join('');
+  document.getElementById('pbody').innerHTML=`<div class="pchips">${chips}</div><div class="metrics">${metrics}</div><div class="plogt">Recent activity</div>${log}`;
+  document.getElementById('panel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closePanel(){
+  document.getElementById('panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+
+function tick(){
+  const now=new Date();
+  const t=now.toLocaleTimeString('en-GB');
+  const d=now.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+  const h=document.getElementById('htime');
+  const f=document.getElementById('ftime');
+  if(h)h.textContent=d+' · '+t;
+  if(f)f.textContent=d+' · '+t;
+}
+tick();setInterval(tick,1000);
+</script>
+
+<!-- GES Hub Navigation -->
+<style>
+.ges-hub-nav{
+  position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);
+  display:inline-flex;align-items:stretch;
+  background:rgba(42,34,24,0.93);backdrop-filter:blur(14px);
+  border:0.5px solid rgba(255,255,255,0.08);
+  border-radius:50px;overflow:hidden;
+  z-index:9999;
+  box-shadow:0 4px 24px rgba(0,0,0,0.3);
+  font-family:'DM Mono',monospace;
+  white-space:nowrap;
+  max-width:calc(100vw - 2rem);
+}
+.ges-hub-link{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 16px;
+  font-size:9px;letter-spacing:0.15em;text-transform:uppercase;
+  color:rgba(244,240,232,0.45);text-decoration:none;
+  border-right:0.5px solid rgba(255,255,255,0.06);
+  transition:background 0.15s,color 0.15s;
+  line-height:1;
+}
+.ges-hub-link:last-child{border-right:none}
+.ges-hub-link:hover{background:rgba(255,255,255,0.04);color:rgba(244,240,232,0.95)}
+.ges-hub-link.active{color:#2a9d8f}
+.ges-hub-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+.ges-hub-home{color:#2a9d8f !important;border-right:0.5px solid rgba(255,255,255,0.1) !important;}
+@media(max-width:600px){
+  .ges-hub-nav{bottom:0;left:0;right:0;transform:none;border-radius:0;max-width:100%;border-left:none;border-right:none;border-bottom:none;justify-content:stretch}
+  .ges-hub-link{flex:1;justify-content:center;padding:10px 8px;font-size:8px}
+}
+</style>
+<nav class="ges-hub-nav" aria-label="GES navigation">
+  <a class="ges-hub-link ges-hub-home" href="index.html">GES Hub</a>
+  <a class="ges-hub-link" href="ges-landing.html"><span class="ges-hub-dot"></span>Landing</a>
+  <a class="ges-hub-link" href="estate-map.html"><span class="ges-hub-dot"></span>Estate Map</a>
+  <a class="ges-hub-link" href="garden-portal.html"><span class="ges-hub-dot"></span>Pond Monitor</a>
+  <a class="ges-hub-link active" href="estate-drone.html"><span class="ges-hub-dot"></span>Drone View</a>
+</nav>
+
+</body>
+</html>
