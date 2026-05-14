@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Garden Ecology System — Beta</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --cream:#f5f1e8;
+  --cream2:#ede8dc;
+  --ink:#1e1a12;
+  --ink2:rgba(30,26,18,0.52);
+  --ink3:rgba(30,26,18,0.12);
+  --cyan:#2a9d8f;
+  --cyan2:rgba(42,157,143,0.12);
+  --cyan3:rgba(42,157,143,0.35);
+  --gold:#9a7c2e;
+}
+
+html,body{height:100%;overflow:hidden}
+
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Cormorant Garamond',serif;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Paper texture */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;
+}
+
+/* Beta badge */
+.beta-bar{
+  background:var(--ink);
+  color:var(--cream);
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  text-align:center;padding:7px;
+  position:relative;z-index:10;
+}
+.beta-bar span{color:var(--cyan)}
+
+/* Nav */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.1rem 2.5rem;
+  border-bottom:0.5px solid var(--ink3);
+  position:relative;z-index:10;
+}
+.nav-logo{height:38px;width:auto}
+.nav-tagline{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--ink2);
+}
+
+/* Main layout */
+main{
+  flex:1;display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:0;
+  position:relative;z-index:5;
+  overflow:hidden;
+}
+
+.card{
+  position:relative;overflow:hidden;
+  border:0.5px solid var(--ink3);
+  cursor:pointer;
+  transition:all 0.4s ease;
+  text-decoration:none;color:inherit;
+  display:flex;flex-direction:column;
+  justify-content:flex-end;padding:2rem 2.5rem;
+}
+
+.card::before{
+  content:'';
+  position:absolute;inset:0;
+  opacity:0;transition:opacity 0.4s;
+}
+
+.card:hover::before{opacity:1}
+
+.card:hover .card-arrow{transform:translate(4px,-4px)}
+.card:hover .card-num{opacity:1}
+
+/* Card 1 — Landing */
+.card-landing{background:var(--cream2)}
+.card-landing::before{background:linear-gradient(135deg,rgba(42,157,143,0.07),transparent)}
+.card-landing .card-accent{color:var(--cyan)}
+
+/* Card 2 — Estate Map */
+.card-map{background:#f0ece3}
+.card-map::before{background:linear-gradient(135deg,rgba(154,124,46,0.07),transparent)}
+.card-map .card-accent{color:var(--gold)}
+
+/* Card 3 — Portal */
+.card-portal{
+  background:var(--ink);
+  color:var(--cream);
+}
+.card-portal::before{background:linear-gradient(135deg,rgba(0,229,200,0.1),transparent)}
+.card-portal .card-accent{color:#00e5c8}
+.card-portal .card-label{color:rgba(232,245,243,0.45)}
+.card-portal .card-desc{color:rgba(232,245,243,0.6)}
+.card-portal .card-arrow{color:rgba(232,245,243,0.7)}
+.card-portal .card-num{color:rgba(232,245,243,0.2)}
+
+/* Card 4 — Drone */
+.card-drone{background:#eae5db}
+.card-drone::before{background:linear-gradient(135deg,rgba(107,143,168,0.1),transparent)}
+.card-drone .card-accent{color:#4a7a9b}
+
+.card-num{
+  position:absolute;top:1.5rem;right:2rem;
+  font-family:'DM Mono',monospace;
+  font-size:11px;letter-spacing:0.1em;
+  color:rgba(30,26,18,0.15);
+  opacity:0.6;
+  transition:opacity 0.3s;
+}
+
+.card-label{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--ink2);margin-bottom:0.6rem;
+}
+
+.card-title{
+  font-size:clamp(1.5rem,2.5vw,2.2rem);
+  font-weight:300;line-height:1.15;
+  margin-bottom:0.6rem;
+}
+
+.card-title em{font-style:italic}
+.card-title strong{font-weight:600}
+
+.card-desc{
+  font-size:14px;line-height:1.6;
+  color:var(--ink2);max-width:320px;
+  margin-bottom:1.25rem;
+}
+
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+.card-tag{
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  padding:4px 12px;border-radius:100px;
+}
+
+.tag-public{
+  background:var(--cyan2);color:var(--cyan);
+  border:0.5px solid var(--cyan3);
+}
+.tag-client{
+  background:rgba(0,229,200,0.1);color:#00e5c8;
+  border:0.5px solid rgba(0,229,200,0.3);
+}
+.tag-view{
+  background:rgba(107,143,168,0.12);color:#4a7a9b;
+  border:0.5px solid rgba(107,143,168,0.3);
+}
+.tag-beta{
+  background:rgba(154,124,46,0.1);color:var(--gold);
+  border:0.5px solid rgba(154,124,46,0.3);
+}
+
+.card-arrow{
+  font-size:1.2rem;color:var(--ink2);
+  transition:transform 0.3s;
+  line-height:1;
+}
+
+/* Botanical illustration in top-right of card 1 */
+.botanical{
+  position:absolute;top:-20px;right:-20px;
+  width:180px;height:180px;opacity:0.08;
+  transition:opacity 0.4s;
+}
+.card:hover .botanical{opacity:0.14}
+
+/* Divider lines */
+main::after{
+  content:'';
+  position:absolute;
+  top:50%;left:0;right:0;
+  height:0.5px;background:var(--ink3);
+  pointer-events:none;
+}
+main::before{
+  content:'';
+  position:absolute;
+  left:50%;top:0;bottom:0;
+  width:0.5px;background:var(--ink3);
+  pointer-events:none;
+}
+
+/* Footer */
+footer{
+  border-top:0.5px solid var(--ink3);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.75rem 2.5rem;
+  font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:0.14em;text-transform:uppercase;
+  color:var(--ink2);
+  position:relative;z-index:10;
+  background:rgba(245,241,232,0.8);
+  backdrop-filter:blur(8px);
+}
+
+.footer-live{
+  display:flex;align-items:center;gap:8px;
+}
+.live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--cyan);
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.8)}}
+
+@media(max-width:640px){
+  main{grid-template-columns:1fr;grid-template-rows:repeat(4,1fr);overflow-y:auto;height:auto}
+  html,body{overflow:auto;height:auto}
+  nav{padding:0.9rem 1.25rem}
+  footer{padding:0.75rem 1.25rem}
+  .card{padding:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="beta-bar">
+  Private beta &nbsp;·&nbsp; <span>The Garden Ecology System</span> &nbsp;·&nbsp; MRC Garden &amp; Estate Management Ltd
+</div>
+
+<nav>
+  <svg class="nav-logo" viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="32" font-family="Cormorant Garamond, serif" font-size="22" font-weight="300" fill="#1e1a12" letter-spacing="2">GES</text>
+    <line x1="40" y1="18" x2="40" y2="36" stroke="#2a9d8f" stroke-width="0.5"/>
+    <text x="48" y="24" font-family="DM Mono, monospace" font-size="7" fill="rgba(30,26,18,0.5)" letter-spacing="1.5">GARDEN</text>
+    <text x="48" y="35" font-family="DM Mono, monospace" font-size="7" fill="rgba(30,26,18,0.5)" letter-spacing="1.5">ECOLOGY</text>
+  </svg>
+  <div class="nav-tagline">Beta access &nbsp;·&nbsp; Select a module below</div>
+</nav>
+
+<main>
+
+  <!-- 1: Landing / Marketing -->
+  <a class="card card-landing" href="ges-landing.html">
+    <svg class="botanical" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="100" cy="130" rx="80" ry="95" fill="#2a9d8f"/>
+      <ellipse cx="60" cy="80" rx="55" ry="75" fill="#5a8a48"/>
+      <ellipse cx="150" cy="150" rx="50" ry="65" fill="#6b8fa8"/>
+    </svg>
+    <div class="card-num">01</div>
+    <div class="card-label">Public · Marketing</div>
+    <div class="card-title">
+      The <em>Garden</em><br><strong>Ecology System</strong>
+    </div>
+    <div class="card-desc">The client-facing landing page. Discovery, story and the readiness assessment entry point.</div>
+    <div class="card-footer">
+      <span class="card-tag tag-public">Landing page</span>
+      <span class="card-arrow">↗</span>
+    </div>
+  </a>
+
+  <!-- 2: Estate Map -->
+  <a class="card card-map" href="estate-map.html">
+    <div class="card-num">02</div>
+    <div class="card-label">Client · Portal view</div>
+    <div class="card-title">
+      Estate<br><em>Garden</em> <strong>Map</strong>
+    </div>
+    <div class="card-desc">Interactive zone-by-zone overview of the estate. Real-time health indicators and seasonal status per area.</div>
+    <div class="card-footer">
+      <span class="card-tag tag-beta">Estate overview</span>
+      <span class="card-arrow">↗</span>
+    </div>
+  </a>
+
+  <!-- 3: Portal / Pond Monitor -->
+  <a class="card card-portal" href="garden-portal.html">
+    <div class="card-num" style="color:rgba(232,245,243,0.2)">03</div>
+    <div class="card-label">Client · Live data</div>
+    <div class="card-title">
+      Pond &amp; Water<br><em>Systems</em> <strong>Monitor</strong>
+    </div>
+    <div class="card-desc" style="color:rgba(232,245,243,0.55)">Live sensor readings, water quality, irrigation scheduling and the automated event log.</div>
+    <div class="card-footer">
+      <span class="card-tag tag-client">Live portal</span>
+      <span class="card-arrow" style="color:rgba(232,245,243,0.6)">↗</span>
+    </div>
+  </a>
+
+  <!-- 4: Drone / Aerial view -->
+  <a class="card card-drone" href="estate-drone.html">
+    <div class="card-num">04</div>
+    <div class="card-label">Client · Aerial survey</div>
+    <div class="card-title">
+      Drone &amp; Aerial<br><strong>Estate</strong> <em>View</em>
+    </div>
+    <div class="card-desc">Zoomable aerial survey of the estate with annotated zones, paths and active monitoring points.</div>
+    <div class="card-footer">
+      <span class="card-tag tag-view">Aerial map</span>
+      <span class="card-arrow">↗</span>
+    </div>
+  </a>
+
+</main>
+
+<footer>
+  <div class="footer-live">
+    <span class="live-dot"></span>
+    System active — Hartley Estate demo
+  </div>
+  <div>Precision Design · Logical Ecology · Works for you</div>
+</footer>
+
+</body>
+</html>
