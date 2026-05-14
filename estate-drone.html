@@ -531,45 +531,58 @@ tick();setInterval(tick,1000);
 </script>
 
 <!-- GES Hub Navigation -->
+
 <style>
-.ges-hub-nav{
-  position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);
-  display:inline-flex;align-items:stretch;
-  background:rgba(42,34,24,0.93);backdrop-filter:blur(14px);
-  border:0.5px solid rgba(255,255,255,0.08);
-  border-radius:50px;overflow:hidden;
-  z-index:9999;
-  box-shadow:0 4px 24px rgba(0,0,0,0.3);
-  font-family:'DM Mono',monospace;
-  white-space:nowrap;
-  max-width:calc(100vw - 2rem);
+nav.ges-hub-nav{
+  position:fixed !important;bottom:1.25rem !important;top:auto !important;
+  left:50% !important;transform:translateX(-50%) !important;
+  display:inline-flex !important;align-items:center !important;
+  border-radius:50px !important;overflow:hidden;
+  z-index:9999 !important;
+  font-family:'DM Mono',monospace !important;
+  white-space:nowrap !important;
+  max-width:calc(100vw - 2rem) !important;
+  padding:0 !important;
+  width:auto !important;
+  gap:0 !important;
 }
-.ges-hub-link{
-  display:flex;align-items:center;gap:6px;
-  padding:9px 16px;
-  font-size:9px;letter-spacing:0.15em;text-transform:uppercase;
-  color:rgba(244,240,232,0.45);text-decoration:none;
-  border-right:0.5px solid rgba(255,255,255,0.06);
-  transition:background 0.15s,color 0.15s;
-  line-height:1;
+nav.ges-hub-nav a{
+  display:flex !important;align-items:center !important;gap:6px !important;
+  padding:9px 16px !important;
+  font-size:9px !important;letter-spacing:0.15em !important;text-transform:uppercase !important;
+  text-decoration:none !important;
+  transition:background 0.15s,color 0.15s !important;
+  line-height:1 !important;
+  white-space:nowrap !important;
 }
-.ges-hub-link:last-child{border-right:none}
-.ges-hub-link:hover{background:rgba(255,255,255,0.04);color:rgba(244,240,232,0.95)}
-.ges-hub-link.active{color:#2a9d8f}
-.ges-hub-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
-.ges-hub-home{color:#2a9d8f !important;border-right:0.5px solid rgba(255,255,255,0.1) !important;}
+nav.ges-hub-nav a:last-child{ border-right:none !important; }
+.ges-hub-dot{width:4px !important;height:4px !important;border-radius:50% !important;background:currentColor !important;flex-shrink:0 !important;display:inline-block !important;}
 @media(max-width:600px){
-  .ges-hub-nav{bottom:0;left:0;right:0;transform:none;border-radius:0;max-width:100%;border-left:none;border-right:none;border-bottom:none;justify-content:stretch}
-  .ges-hub-link{flex:1;justify-content:center;padding:10px 8px;font-size:8px}
+  nav.ges-hub-nav{bottom:0 !important;left:0 !important;right:0 !important;transform:none !important;border-radius:0 !important;max-width:100% !important;border-left:none !important;border-right:none !important;border-bottom:none !important;}
+  nav.ges-hub-nav a{flex:1 !important;justify-content:center !important;padding:10px 8px !important;font-size:8px !important;}
+}
+</style>
+<style>
+nav.ges-hub-nav{
+  background:rgba(42,34,24,0.93) !important;
+  border:0.5px solid rgba(255,255,255,0.08) !important;
+  box-shadow:0 4px 24px rgba(0,0,0,0.3) !important;
+}
+nav.ges-hub-nav a{
+  color:rgba(244,240,232,0.45);
+  border-right:0.5px solid rgba(255,255,255,0.06);
+}
+nav.ges-hub-nav a:hover{
+  background:rgba(255,255,255,0.04) !important;
+  color:rgba(244,240,232,0.95) !important;
 }
 </style>
 <nav class="ges-hub-nav" aria-label="GES navigation">
-  <a class="ges-hub-link ges-hub-home" href="index.html">GES Hub</a>
-  <a class="ges-hub-link" href="ges-landing.html"><span class="ges-hub-dot"></span>Landing</a>
-  <a class="ges-hub-link" href="estate-map.html"><span class="ges-hub-dot"></span>Estate Map</a>
-  <a class="ges-hub-link" href="garden-portal.html"><span class="ges-hub-dot"></span>Pond Monitor</a>
-  <a class="ges-hub-link active" href="estate-drone.html"><span class="ges-hub-dot"></span>Drone View</a>
+  <a href="index.html" style="color:#2a9d8f !important;border-right:0.5px solid rgba(255,255,255,0.1) !important;">GES Hub</a>
+  <a href="ges-landing.html" style=""><span class="ges-hub-dot"></span>Landing</a>
+  <a href="estate-map.html" style=""><span class="ges-hub-dot"></span>Estate Map</a>
+  <a href="garden-portal.html" style=""><span class="ges-hub-dot"></span>Pond Monitor</a>
+  <a href="estate-drone.html" style="color:#2a9d8f !important;"><span class="ges-hub-dot"></span>Drone View</a>
 </nav>
-
 </body>
 </html>
