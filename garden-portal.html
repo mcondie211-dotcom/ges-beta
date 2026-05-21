@@ -673,12 +673,11 @@
 
 
 <!-- GES Hub Navigation -->
-
 <style>
 nav.ges-hub-nav{
-  position:fixed !important;bottom:1.25rem !important;top:auto !important;
+  position:fixed !important;bottom:1.5rem !important;top:auto !important;
   left:50% !important;transform:translateX(-50%) !important;
-  display:inline-flex !important;align-items:center !important;
+  display:inline-flex !important;align-items:stretch !important;
   border-radius:50px !important;overflow:hidden;
   z-index:9999 !important;
   font-family:'DM Mono',monospace !important;
@@ -687,44 +686,50 @@ nav.ges-hub-nav{
   padding:0 !important;
   width:auto !important;
   gap:0 !important;
+  background:rgba(8,15,14,0.96) !important;
+  border:0.5px solid rgba(0,229,200,0.18) !important;
+  box-shadow:0 6px 32px rgba(0,0,0,0.5) !important;
 }
 nav.ges-hub-nav a{
-  display:flex !important;align-items:center !important;gap:6px !important;
-  padding:9px 16px !important;
-  font-size:9px !important;letter-spacing:0.15em !important;text-transform:uppercase !important;
+  display:flex !important;align-items:center !important;gap:7px !important;
+  padding:14px 22px !important;
+  font-size:11px !important;letter-spacing:0.14em !important;text-transform:uppercase !important;
   text-decoration:none !important;
   transition:background 0.15s,color 0.15s !important;
   line-height:1 !important;
   white-space:nowrap !important;
+  color:rgba(232,245,243,0.4) !important;
+  border-right:0.5px solid rgba(0,229,200,0.08) !important;
+  min-height:48px !important;
 }
 nav.ges-hub-nav a:last-child{ border-right:none !important; }
-.ges-hub-dot{width:4px !important;height:4px !important;border-radius:50% !important;background:currentColor !important;flex-shrink:0 !important;display:inline-block !important;}
-@media(max-width:600px){
-  nav.ges-hub-nav{bottom:0 !important;left:0 !important;right:0 !important;transform:none !important;border-radius:0 !important;max-width:100% !important;border-left:none !important;border-right:none !important;border-bottom:none !important;}
-  nav.ges-hub-nav a{flex:1 !important;justify-content:center !important;padding:10px 8px !important;font-size:8px !important;}
-}
-</style>
-<style>
-nav.ges-hub-nav{
-  background:rgba(8,15,14,0.95) !important;
-  border:0.5px solid rgba(0,229,200,0.18) !important;
-  box-shadow:0 4px 24px rgba(0,0,0,0.4) !important;
-}
-nav.ges-hub-nav a{
-  color:rgba(232,245,243,0.4);
-  border-right:0.5px solid rgba(0,229,200,0.08);
-}
 nav.ges-hub-nav a:hover{
-  background:rgba(0,229,200,0.05) !important;
+  background:rgba(0,229,200,0.06) !important;
   color:rgba(232,245,243,0.9) !important;
+}
+.ges-hub-dot{width:5px !important;height:5px !important;border-radius:50% !important;background:currentColor !important;flex-shrink:0 !important;display:inline-block !important;opacity:0.7 !important;}
+@media(max-width:600px){
+  nav.ges-hub-nav{
+    bottom:0 !important;left:0 !important;right:0 !important;
+    transform:none !important;border-radius:0 !important;
+    max-width:100% !important;
+    border-left:none !important;border-right:none !important;border-bottom:none !important;
+    border-top:0.5px solid rgba(0,229,200,0.15) !important;
+  }
+  nav.ges-hub-nav a{
+    flex:1 !important;justify-content:center !important;
+    padding:16px 6px !important;
+    font-size:9px !important;
+    min-height:56px !important;
+    gap:5px !important;
+  }
 }
 </style>
 <nav class="ges-hub-nav" aria-label="GES navigation">
   <a href="index.html" style="color:#00e5c8 !important;border-right:0.5px solid rgba(0,229,200,0.15) !important;">GES Hub</a>
-  <a href="ges-landing.html" style=""><span class="ges-hub-dot"></span>Landing</a>
-  
+  <a href="ges-landing.html"><span class="ges-hub-dot"></span>Landing</a>
   <a href="garden-portal.html" style="color:#00e5c8 !important;"><span class="ges-hub-dot"></span>Pond Monitor</a>
-  <a href="estate-drone.html" style=""><span class="ges-hub-dot"></span>Estate View</a>
+  <a href="estate-drone.html"><span class="ges-hub-dot"></span>Estate View</a>
 </nav>
 </body>
 </html>

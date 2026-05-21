@@ -95,13 +95,17 @@ main{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;ju
 .cam-modal-note{padding:10px 16px;font-family:'DM Mono',monospace;font-size:7.5px;letter-spacing:0.12em;color:rgba(245,240,232,0.28);text-transform:uppercase}
 .cam-live{width:5px;height:5px;border-radius:50%;background:#d44;animation:p 1.4s ease-in-out infinite}
 
-nav.ges-hub-nav{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);display:inline-flex;align-items:stretch;background:rgba(20,16,10,0.96);backdrop-filter:blur(14px);border:0.5px solid rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;z-index:999;box-shadow:0 4px 24px rgba(0,0,0,0.5);font-family:'DM Mono',monospace;white-space:nowrap;max-width:calc(100vw - 2rem)}
-nav.ges-hub-nav a{display:flex;align-items:center;gap:6px;padding:9px 15px;font-size:8px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,240,232,0.35);text-decoration:none;border-right:0.5px solid rgba(255,255,255,0.05);transition:color 0.15s,background 0.15s;line-height:1}
+nav.ges-hub-nav{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);display:inline-flex;align-items:stretch;background:rgba(20,16,10,0.96);backdrop-filter:blur(14px);border:0.5px solid rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;z-index:999;box-shadow:0 6px 32px rgba(0,0,0,0.5);font-family:'DM Mono',monospace;white-space:nowrap;max-width:calc(100vw - 2rem)}
+nav.ges-hub-nav a{display:flex;align-items:center;gap:7px;padding:14px 22px;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(245,240,232,0.35);text-decoration:none;border-right:0.5px solid rgba(255,255,255,0.05);transition:color 0.15s,background 0.15s;line-height:1;min-height:48px}
 nav.ges-hub-nav a:last-child{border-right:none}
 nav.ges-hub-nav a:hover{color:rgba(245,240,232,0.9);background:rgba(255,255,255,0.03)}
 nav.ges-hub-nav a.active{color:#2a9d8f}
 nav.ges-hub-nav a.hub{color:#2a9d8f!important;border-right:0.5px solid rgba(255,255,255,0.08)!important}
-.nd{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+.nd{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.7}
+@media(max-width:600px){
+  nav.ges-hub-nav{bottom:0;left:0;right:0;transform:none;border-radius:0;max-width:100%;border-left:none;border-right:none;border-bottom:none;border-top:0.5px solid rgba(255,255,255,0.08)}
+  nav.ges-hub-nav a{flex:1;justify-content:center;padding:16px 6px;font-size:9px;min-height:56px;gap:5px}
+}
 </style>
 </head>
 <body>
