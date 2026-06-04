@@ -243,48 +243,38 @@
   }
   .irrigation-block.active .irrigation-val { color: var(--cyan); }
 
-  /* ─── TASKS PANEL ─── */
+  /* ─── STATUS PANEL ─── */
   .panel-tasks { grid-column: 3 / 4; grid-row: 1 / 3; }
 
-  .task-section-label {
-    font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--text-muted); margin: 12px 0 6px;
-  }
-  .task-section-label:first-of-type { margin-top: 0; }
+  .status-grid { display: flex; flex-direction: column; gap: 10px; }
 
-  .task-list { display: flex; flex-direction: column; gap: 5px; }
-
-  .task-item {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 11px 12px;
+  .status-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 14px;
     background: var(--dark3);
     border: 0.5px solid rgba(255,255,255,0.05);
     border-radius: 5px;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    user-select: none;
   }
-  .task-item:hover { border-color: rgba(255,255,255,0.12); }
 
-  .task-check {
-    width: 14px; height: 14px;
-    border: 0.5px solid var(--border);
-    border-radius: 2px; flex-shrink: 0; margin-top: 1px;
+  .status-icon {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--cyan-dim); border: 0.5px solid var(--border);
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, border-color 0.2s;
+    flex-shrink: 0; font-size: 13px;
   }
-  .task-item.done .task-check { background: var(--green-dim); border-color: var(--green); }
-  .task-item.done .task-check::after { content: '✓'; font-size: 9px; color: var(--green); }
 
-  .task-body { flex: 1; }
-  .task-title { font-size: 11px; color: var(--text); margin-bottom: 3px; line-height: 1.3; }
-  .task-item.done .task-title { color: var(--text-muted); text-decoration: line-through; text-decoration-color: rgba(226,240,226,0.25); }
-  .task-meta { font-size: 9px; color: var(--text-muted); letter-spacing: 0.06em; }
+  .status-body { flex: 1; }
+  .status-name { font-size: 11px; color: var(--text); margin-bottom: 3px; }
+  .status-detail { font-size: 9px; color: var(--text-muted); letter-spacing: 0.06em; }
 
-  .task-priority { width: 3px; border-radius: 2px; flex-shrink: 0; align-self: stretch; }
-  .priority-high { background: var(--amber); }
-  .priority-med { background: var(--cyan); opacity: 0.5; }
-  .priority-low { background: rgba(255,255,255,0.1); }
+  .status-badge {
+    font-size: 8px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 20px; flex-shrink: 0;
+  }
+  .status-badge.ok {
+    color: var(--green); background: var(--green-dim);
+    border: 0.5px solid rgba(92,184,92,0.3);
+  }
 
   /* ─── WEATHER / LOCAL CONDITIONS ─── */
   .panel-weather { grid-column: 1 / 2; }
@@ -342,6 +332,179 @@
     .hero-stat { text-align: left; }
     .timestamp { display: none; }
     body { padding-bottom: 5rem; }
+  }
+
+  /* ─── GARDEN ASSISTANT ─── */
+  .assistant-wrap {
+    background: var(--dark2);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 2rem 1.75rem;
+  }
+
+  .assistant-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .assistant-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 1.25rem;
+  }
+
+  .assistant-icon {
+    font-size: 22px;
+    line-height: 1;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .assistant-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 20px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .assistant-sub {
+    font-size: 9px;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    line-height: 1.6;
+  }
+
+  .assistant-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .assistant-input {
+    flex: 1;
+    background: var(--dark3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 13px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .assistant-input::placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .assistant-input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0,229,200,0.08);
+  }
+
+  .assistant-btn {
+    background: var(--cyan);
+    border: none;
+    border-radius: 6px;
+    padding: 13px 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dark);
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+
+  .assistant-btn:hover { opacity: 0.88; }
+  .assistant-btn:active { transform: scale(0.98); }
+  .assistant-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .assistant-btn svg {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .assistant-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .suggestion-chip {
+    background: transparent;
+    border: 0.5px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .suggestion-chip:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: var(--cyan-dim);
+  }
+
+  .assistant-response {
+    margin-top: 1.25rem;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: var(--dark3);
+    border: 0.5px solid var(--border);
+    border-radius: 6px;
+    padding: 1.25rem 1.5rem;
+    animation: fadeSlideIn 0.3s ease;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .response-bar {
+    width: 3px;
+    border-radius: 2px;
+    background: var(--cyan);
+    align-self: stretch;
+    flex-shrink: 0;
+    min-height: 20px;
+  }
+
+  .response-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+  }
+
+  .response-text strong {
+    color: var(--cyan);
+    font-weight: 400;
+  }
+
+  .response-text p + p { margin-top: 0.75em; }
+
+  @media (max-width: 600px) {
+    .assistant-wrap { padding: 1.5rem 1.25rem; }
+    .assistant-input { font-size: 14px; padding: 12px 14px; }
+    .assistant-sub { display: none; }
   }
 
   /* ─── HUB NAV ─── */
@@ -428,6 +591,46 @@
   </div>
 </div>
 
+<!-- ─── GARDEN ASSISTANT ─── -->
+<div class="assistant-wrap">
+  <div class="assistant-inner">
+    <div class="assistant-heading">
+      <span class="assistant-icon">🌿</span>
+      <div>
+        <div class="assistant-title">Ask about your garden</div>
+        <div class="assistant-sub">What do my tomatoes need this weekend? · Is it a good day to plant? · What should the kids pick?</div>
+      </div>
+    </div>
+    <div class="assistant-form">
+      <input
+        type="text"
+        id="gardenQuery"
+        class="assistant-input"
+        placeholder="Ask anything about your garden…"
+        autocomplete="off"
+      />
+      <button class="assistant-btn" id="askBtn">
+        <span id="askBtnText">Ask</span>
+        <span id="askBtnSpinner" style="display:none">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+    <div class="assistant-suggestions">
+      <button class="suggestion-chip" onclick="askSuggestion(this)">What do my tomatoes need this weekend?</button>
+      <button class="suggestion-chip" onclick="askSuggestion(this)">Is it a good time to water today?</button>
+      <button class="suggestion-chip" onclick="askSuggestion(this)">What can we pick right now?</button>
+      <button class="suggestion-chip" onclick="askSuggestion(this)">Anything the kids can do in the garden?</button>
+    </div>
+    <div class="assistant-response" id="assistantResponse" style="display:none">
+      <div class="response-bar"></div>
+      <div class="response-text" id="responseText"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ─── MAIN GRID ─── -->
 <div class="main-grid">
 
@@ -490,85 +693,55 @@
 
   </div>
 
-  <!-- TASKS -->
+  <!-- SYSTEM STATUS -->
   <div class="panel panel-tasks">
-    <div class="panel-label">Tasks</div>
+    <div class="panel-label">System Status</div>
 
-    <div class="task-list">
-      <div class="task-section-label">To do</div>
+    <div class="status-grid">
 
-      <div class="task-item">
-        <div class="task-priority priority-high"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Check drip lines for blockages</div>
-          <div class="task-meta">This week · ~15 min</div>
+      <div class="status-item">
+        <div class="status-icon">💧</div>
+        <div class="status-body">
+          <div class="status-name">Irrigation</div>
+          <div class="status-detail">Scheduled · running normally</div>
         </div>
+        <div class="status-badge ok">OK</div>
       </div>
 
-      <div class="task-item">
-        <div class="task-priority priority-high"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Top-dress beds with compost</div>
-          <div class="task-meta">This week · ~45 min</div>
+      <div class="status-item">
+        <div class="status-icon">🌡</div>
+        <div class="status-body">
+          <div class="status-name">Soil Sensors</div>
+          <div class="status-detail">All readings within range</div>
         </div>
+        <div class="status-badge ok">OK</div>
       </div>
 
-      <div class="task-item">
-        <div class="task-priority priority-med"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Side-shoot tomatoes</div>
-          <div class="task-meta">Every 7–10 days · ~20 min</div>
+      <div class="status-item">
+        <div class="status-icon">⚙</div>
+        <div class="status-body">
+          <div class="status-name">Drip Lines</div>
+          <div class="status-detail">Last checked Wed 21 May</div>
         </div>
+        <div class="status-badge ok">OK</div>
       </div>
 
-      <div class="task-item">
-        <div class="task-priority priority-med"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Weed between raised beds</div>
-          <div class="task-meta">Ongoing · ~30 min</div>
+      <div class="status-item">
+        <div class="status-icon">🕐</div>
+        <div class="status-body">
+          <div class="status-name">Timer Schedule</div>
+          <div class="status-detail">06:00 &amp; 18:30 daily</div>
         </div>
+        <div class="status-badge ok">Active</div>
       </div>
 
-      <div class="task-item">
-        <div class="task-priority priority-low"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Check netting on brassicas</div>
-          <div class="task-meta">Ongoing</div>
+      <div class="status-item">
+        <div class="status-icon">📡</div>
+        <div class="status-body">
+          <div class="status-name">GES Monitoring</div>
+          <div class="status-detail">Live · next visit in 3 weeks</div>
         </div>
-      </div>
-
-      <div class="task-section-label">Completed</div>
-
-      <div class="task-item done">
-        <div class="task-priority priority-high"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Test irrigation system post-install</div>
-          <div class="task-meta">Done Tue 20 May</div>
-        </div>
-      </div>
-
-      <div class="task-item done">
-        <div class="task-priority priority-med"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Plant out summer seedlings</div>
-          <div class="task-meta">Done Mon 19 May</div>
-        </div>
-      </div>
-
-      <div class="task-item done">
-        <div class="task-priority priority-low"></div>
-        <div class="task-check"></div>
-        <div class="task-body">
-          <div class="task-title">Apply slow-release fertiliser</div>
-          <div class="task-meta">Done Sat 17 May</div>
-        </div>
+        <div class="status-badge ok">Live</div>
       </div>
 
     </div>
@@ -663,10 +836,104 @@
   updateTime();
   setInterval(updateTime, 1000);
 
-  // Task toggle
-  document.querySelectorAll('.task-item:not(.done)').forEach(item => {
-    item.addEventListener('click', () => item.classList.toggle('done'));
+  // ─── GARDEN ASSISTANT ───
+
+  const GARDEN_CONTEXT = `You are the GES (Garden Ecology System) garden assistant for this client's private kitchen garden. Answer their questions in a warm, knowledgeable, friendly tone — like a head gardener who knows their plot well. Be specific to their actual conditions. Keep answers practical and encouraging, not overwhelming. If kids are mentioned, include something fun and safe they can do.
+
+PROPERTY:
+- South-facing raised beds, sheltered, UK
+- 8 raised timber beds (~3m x 1.2m each)
+- Today: ${new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'})}
+
+CURRENT READINGS:
+- Soil temp: 21°C · Soil moisture: 64% (optimal, no watering needed today)
+- Last irrigation: today 06:00 · Next: today 18:30
+- Dry week, 17–21°C days, 10–13°C nights. Rain forecast Sunday.
+
+WHAT'S GROWING:
+- Beds 1 & 2: Tomatoes (Gardener's Delight + Moneymaker), planted out 19 May
+- Bed 3: Courgettes (Defender F1), planted out 19 May
+- Bed 4: French beans (Blue Lake), sown 12 May
+- Bed 5: Lettuce mix (Little Gem, Lollo Rosso) — approaching ready to pick
+- Bed 6: Beetroot (Boltardy), sown 5 May
+- Bed 7: Kale and chard — cut-and-come-again, ready now
+- Bed 8: Cucumbers (Marketmore), planted out 19 May
+
+RECENT VISIT LOG:
+- Wed 21 May (GES): Irrigation confirmed working. Sensor calibrated. Lettuce starting to heart up. Everything looking healthy.
+- Mon 19 May (GES): Summer seedlings planted out. Fleece removed — temperatures stable.
+- Sat 17 May (GES): Slow-release fertiliser applied to all beds. Drip emitters checked, no blockages. Paths weeded.
+- Mon 5 May (GES): Lettuce and beetroot sown direct. Beds top-dressed with compost.
+
+NOTES: No pest issues. Tomatoes will need first side-shooting soon. Lettuce in bed 5 may be ready to start picking outer leaves. Next GES visit in ~3 weeks.`;
+
+  async function askGarden(query) {
+    const btn = document.getElementById('askBtn');
+    const btnText = document.getElementById('askBtnText');
+    const spinner = document.getElementById('askBtnSpinner');
+    const responseDiv = document.getElementById('assistantResponse');
+    const responseText = document.getElementById('responseText');
+
+    if (!query.trim()) return;
+
+    btn.disabled = true;
+    btnText.style.display = 'none';
+    spinner.style.display = 'flex';
+    responseDiv.style.display = 'none';
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: GARDEN_CONTEXT,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{ role: 'user', content: query }]
+        })
+      });
+
+      const data = await response.json();
+      const text = (data.content || [])
+        .filter(b => b.type === 'text')
+        .map(b => b.text)
+        .join('\n')
+        .trim();
+
+      responseText.innerHTML = text
+        .split('\n\n')
+        .filter(p => p.trim())
+        .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+        .join('');
+
+      responseDiv.style.display = 'flex';
+      responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    } catch (err) {
+      responseText.innerHTML = '<p>Sorry, couldn\'t reach the assistant right now. Try again in a moment.</p>';
+      responseDiv.style.display = 'flex';
+    }
+
+    btn.disabled = false;
+    btnText.style.display = 'inline';
+    spinner.style.display = 'none';
+  }
+
+  document.getElementById('askBtn').addEventListener('click', () => {
+    askGarden(document.getElementById('gardenQuery').value);
   });
+
+  document.getElementById('gardenQuery').addEventListener('keydown', e => {
+    if (e.key === 'Enter') askGarden(e.target.value);
+  });
+
+  function askSuggestion(el) {
+    const q = el.textContent;
+    document.getElementById('gardenQuery').value = q;
+    askGarden(q);
+  }
+
 </script>
 </body>
 </html>
