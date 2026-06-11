@@ -394,6 +394,36 @@ footer{
   .hero-botanical{display:none}
   .nav-right .nav-link{display:none}
 }
+
+/* ─── Demo gateway ─── */
+.demo-gate{
+  padding:6rem 2.5rem;
+  background:var(--cream);
+  border-top:0.5px solid var(--ink3);
+}
+.demo-inner{
+  max-width:680px;margin:0 auto;text-align:center;
+}
+.demo-label{
+  font-family:'DM Mono',monospace;font-size:9px;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--cyan);margin-bottom:1.5rem;
+}
+.demo-gate h2{
+  font-size:clamp(1.75rem,3.5vw,2.6rem);font-weight:300;
+  line-height:1.12;color:var(--ink);margin-bottom:1.25rem;
+}
+.demo-gate h2 em{font-style:italic}
+.demo-gate h2 strong{font-weight:600}
+.demo-gate p{
+  font-size:1.05rem;line-height:1.7;color:var(--ink2);
+  max-width:520px;margin:0 auto 2.25rem;
+}
+.demo-gate .btn-ghost svg{transition:transform 0.2s}
+.demo-gate .btn-ghost:hover svg{transform:translateX(3px)}
+@media(max-width:600px){
+  .demo-gate{padding:5rem 1.25rem}
+}
 </style>
 </head>
 <body>
@@ -576,6 +606,23 @@ footer{
   </div>
 </section>
 
+<!-- Demo gateway -->
+<section class="demo-gate" id="demo">
+  <div class="demo-inner">
+    <div class="demo-label">A look inside</div>
+    <h2 class="reveal">
+      See the system <em>in action.</em>
+    </h2>
+    <p>
+      Every client's land is given its own private portal — the pond, the grounds, the kitchen garden, all in one calm view. Step into a live example and see what staying connected to your estate actually looks like.
+    </p>
+    <a href="garden-portal.html" class="btn-ghost">
+      Enter the live demo
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
+    </a>
+  </div>
+</section>
+
 <!-- CTA -->
 <section class="cta-block">
   <div class="cta-inner">
@@ -593,11 +640,11 @@ footer{
         Take the Readiness Check
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7h10M8 3l4 4-4 4"/></svg>
       </a>
-      <a href="https://calendly.com" target="_blank" class="btn-ghost">
+      <a href="https://calendly.com/m-condie211" target="_blank" class="btn-ghost">
         Or book a call directly
       </a>
     </div>
-    <div class="cta-note">Referred by a client · By introduction only</div>
+    <div class="cta-note">Are you ready to find out?</div>
   </div>
 </section>
 
@@ -619,65 +666,5 @@ const obs = new IntersectionObserver((entries) => {
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 </script>
 
-<!-- GES Hub Navigation -->
-<style>
-nav.ges-hub-nav{
-  position:fixed !important;bottom:1.5rem !important;top:auto !important;
-  left:50% !important;transform:translateX(-50%) !important;
-  display:inline-flex !important;align-items:stretch !important;
-  border-radius:50px !important;overflow:hidden;
-  z-index:9999 !important;
-  font-family:'DM Mono',monospace !important;
-  white-space:nowrap !important;
-  max-width:calc(100vw - 2rem) !important;
-  padding:0 !important;
-  width:auto !important;
-  gap:0 !important;
-  background:rgba(30,26,18,0.94) !important;
-  border:0.5px solid rgba(255,255,255,0.1) !important;
-  box-shadow:0 6px 32px rgba(0,0,0,0.3) !important;
-}
-nav.ges-hub-nav a{
-  display:flex !important;align-items:center !important;gap:7px !important;
-  padding:14px 22px !important;
-  font-size:11px !important;letter-spacing:0.14em !important;text-transform:uppercase !important;
-  text-decoration:none !important;
-  transition:background 0.15s,color 0.15s !important;
-  line-height:1 !important;
-  white-space:nowrap !important;
-  color:rgba(245,241,232,0.45) !important;
-  border-right:0.5px solid rgba(255,255,255,0.07) !important;
-  min-height:48px !important;
-}
-nav.ges-hub-nav a:last-child{ border-right:none !important; }
-nav.ges-hub-nav a:hover{
-  background:rgba(255,255,255,0.05) !important;
-  color:rgba(245,241,232,0.95) !important;
-}
-.ges-hub-dot{width:5px !important;height:5px !important;border-radius:50% !important;background:currentColor !important;flex-shrink:0 !important;display:inline-block !important;opacity:0.7 !important;}
-@media(max-width:600px){
-  nav.ges-hub-nav{
-    bottom:0 !important;left:0 !important;right:0 !important;
-    transform:none !important;border-radius:0 !important;
-    max-width:100% !important;
-    border-left:none !important;border-right:none !important;border-bottom:none !important;
-    border-top:0.5px solid rgba(255,255,255,0.1) !important;
-  }
-  nav.ges-hub-nav a{
-    flex:1 !important;justify-content:center !important;
-    padding:16px 6px !important;
-    font-size:9px !important;
-    min-height:56px !important;
-    gap:5px !important;
-  }
-}
-</style>
-<nav class="ges-hub-nav" aria-label="GES navigation">
-  <a href="index.html" style="color:#2a9d8f !important;border-right:0.5px solid rgba(255,255,255,0.12) !important;">GES Hub</a>
-  <a href="ges-landing.html" style="color:#2a9d8f !important;"><span class="ges-hub-dot"></span>Landing</a>
-  <a href="garden-portal.html"><span class="ges-hub-dot"></span>Pond Monitor</a>
-  <a href="estate-drone.html"><span class="ges-hub-dot"></span>Estate View</a>
-  <a href="veg-plot-portal.html"><span class="ges-hub-dot"></span>Veg Plot</a>
-</nav>
 </body>
 </html>
