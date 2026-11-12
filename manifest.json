@@ -1,8 +1,10 @@
 {
   "name": "The Garden Ecology System",
   "short_name": "GES",
-  "description": "Premium garden and estate monitoring by MRC Garden & Estate Management Ltd",
-  "start_url": "/bird-box-portal.html",
+  "description": "Your private estate portal from MRC Garden & Estate Management Ltd",
+  "id": "./estate-drone.html",
+  "start_url": "./estate-drone.html",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#070e07",
   "theme_color": "#070e07",
@@ -21,6 +23,5 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["lifestyle", "utilities"],
-  "screenshots": []
+  "categories": ["lifestyle", "utilities"]
 }
