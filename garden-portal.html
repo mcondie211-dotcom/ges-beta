@@ -11,7 +11,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>The Garden Ecology System — Pond Monitor</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Cormorant+Garamond:ital,wght@0,600;1,300&display=swap" rel="stylesheet">
 <style>
   :root {
     --cyan: #00e5c8;
@@ -502,15 +502,76 @@
     color: var(--cyan);
     font-variant-numeric: tabular-nums;
   }
+
+  /* Bird listening — "last heard" pill under the headline */
+  .bird-pill {
+    margin-top: 16px;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 16px 9px 13px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: rgba(8,15,14,0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    pointer-events: auto;
+    max-width: min(360px, calc(100vw - 48px));
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bird-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .bird-wave { display: flex; gap: 2px; align-items: center; height: 12px; }
+  .bird-wave i {
+    display: block; width: 2px; height: 4px; border-radius: 1px;
+    background: var(--cyan);
+    animation: birdwave 1.4s ease-in-out infinite;
+  }
+  .bird-wave i:nth-child(2) { animation-delay: .2s; }
+  .bird-wave i:nth-child(3) { animation-delay: .4s; }
+  .bird-wave i:nth-child(4) { animation-delay: .6s; }
+  .bird-pill.quiet .bird-wave i { animation: none; opacity: .5; }
+  @keyframes birdwave { 0%, 100% { height: 3px; } 50% { height: 12px; } }
+  .bird-name {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 18px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+    transition: opacity .6s ease;
+  }
+  .bird-ago { color: var(--cyan); }
+  .bird-today {
+    display: none;
+    text-transform: none;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
+  }
+  .bird-pill.open .bird-today { display: block; }
+  @media (prefers-reduced-motion: reduce) { .bird-wave i { animation: none; height: 8px; } }
 </style>
 </head>
 <body>
 
 <header>
-  <img src="https://mcondie211-dotcom.github.io/ges-beta/ges-logo-transparent.png" alt="The Garden Ecology System" class="logo-img">
+  <div class="logo-text" style="line-height:1.15">
+    <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(232,245,243,0.45)">The Garden Ecology System</div>
+    <div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;color:#e8f5f3">Pond <em style="font-weight:300;color:#00e5c8">Monitor</em></div>
+  </div>
   <div class="status-pill">
     <div class="pulse-dot"></div>
-    All systems nominal
+    All running smoothly
   </div>
 </header>
 
@@ -558,6 +619,15 @@
   <div class="pond-title">
     <div class="eyebrow">Live garden monitor · Updated <span id="live-time">--:--:--</span></div>
     <h1>Your pond is<br><span>thriving.</span></h1>
+    <div class="bird-pill" id="birdPill" role="button" tabindex="0" aria-expanded="false" aria-label="Bird listening: last bird heard">
+      <div class="bird-row">
+        <span class="bird-wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span id="birdLabel">Listening · Last heard</span>
+        <span class="bird-name" id="birdName">—</span>
+        <span class="bird-ago" id="birdAgo"></span>
+      </div>
+      <div class="bird-today" id="birdToday"></div>
+    </div>
   </div>
 </div>
 
@@ -575,13 +645,13 @@
   </div>
   <div class="stat-cell fade-up">
     <div class="stat-label">Water temp</div>
-    <div class="stat-value">14.3<span class="unit">°C</span></div>
-    <div class="stat-bar-track"><div class="stat-bar-fill" style="width:45%"></div></div>
+    <div class="stat-value"><span id="p-temp">14.3</span><span class="unit">°C</span></div>
+    <div class="stat-bar-track"><div class="stat-bar-fill" id="p-temp-bar" style="width:45%"></div></div>
   </div>
   <div class="stat-cell fade-up">
     <div class="stat-label">Auto top-ups today</div>
-    <div class="stat-value">2<span class="unit">×</span></div>
-    <div class="stat-bar-track"><div class="stat-bar-fill" style="width:20%"></div></div>
+    <div class="stat-value"><span id="p-topups">2</span><span class="unit">×</span></div>
+    <div class="stat-bar-track"><div class="stat-bar-fill" id="p-topups-bar" style="width:20%"></div></div>
   </div>
 </div>
 
@@ -594,7 +664,7 @@
       <div class="badge badge-ok">Active</div>
     </div>
     <div class="card-main">Standby</div>
-    <div class="card-sub">Level at 78% — top-up triggers below 65%. Last activated 11:24 this morning.</div>
+    <div class="card-sub" id="p-topup-sub">Level at 78% — top-up triggers below 65%. Last activated 11:24 this morning.</div>
     <div class="water-tank"><div class="water-fill"></div></div>
   </div>
 
@@ -611,10 +681,10 @@
   <div class="system-card fade-up">
     <div class="card-header">
       <div class="card-title">Garden irrigation</div>
-      <div class="badge badge-auto">Scheduled</div>
+      <div class="badge badge-auto" id="p-irr-badge">Scheduled</div>
     </div>
-    <div class="card-main">06:30</div>
-    <div class="card-sub">Next watering cycle tomorrow at 06:30. Skipped today — rainfall detected overnight (4.2mm).</div>
+    <div class="card-main" id="p-irr-main">06:30</div>
+    <div class="card-sub" id="p-irr-sub">Next watering cycle tomorrow at 06:30. Skipped today — rainfall detected overnight (4.2mm).</div>
     <div class="water-tank"><div class="water-fill" style="width:0%;animation:none"></div></div>
   </div>
 
@@ -624,7 +694,7 @@
       <div class="badge badge-ok">Healthy</div>
     </div>
     <div class="card-main">All well</div>
-    <div class="card-sub">Koi active and surface-feeding. Water clarity excellent. No algae alerts this week.</div>
+    <div class="card-sub" id="p-fish">Koi active and surface-feeding. Water clarity excellent. No algae alerts this week.</div>
     <div class="water-tank"><div class="water-fill" style="width:95%"></div></div>
   </div>
 
@@ -633,32 +703,7 @@
 <!-- Event log -->
 <div class="timeline">
   <div class="timeline-title">Recent activity</div>
-
-  <div class="event">
-    <div class="event-time">14:02</div>
-    <div class="event-dot"></div>
-    <div class="event-text">pH reading confirmed stable at 7.2 <span class="dim">— no action required</span></div>
-  </div>
-  <div class="event">
-    <div class="event-time">11:24</div>
-    <div class="event-dot"></div>
-    <div class="event-text">Auto top-up activated <span class="dim">— level restored to 78% in 4 mins</span></div>
-  </div>
-  <div class="event">
-    <div class="event-time">09:15</div>
-    <div class="event-dot warn"></div>
-    <div class="event-text">Water level dipped to 64% <span class="dim">— top-up system triggered automatically</span></div>
-  </div>
-  <div class="event">
-    <div class="event-time">06:30</div>
-    <div class="event-dot"></div>
-    <div class="event-text">Irrigation skipped <span class="dim">— 4.2mm rainfall detected overnight</span></div>
-  </div>
-  <div class="event">
-    <div class="event-time">Yesterday</div>
-    <div class="event-dot"></div>
-    <div class="event-text">Weekly system check completed <span class="dim">— all sensors calibrated</span></div>
-  </div>
+  <div id="p-events"></div>
 </div>
 
 <footer>
@@ -678,6 +723,131 @@
   }
   updateTime();
   setInterval(updateTime, 1000);
+
+  // Season from today's date (UK): Dec–Feb winter, Mar–May spring, Jun–Aug summer, Sep–Nov autumn
+  function gesSeason(d){ var m = d.getMonth(); return (m === 11 || m < 2) ? 'winter' : m < 5 ? 'spring' : m < 8 ? 'summer' : 'autumn'; }
+  function gesDaysAgo(n){ var d = new Date(); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }); }
+
+  // ─── DEMO POND — switches automatically with the season ───
+  // Activity times are worked out from "now", so nothing is ever logged in the future.
+  const POND_TEMP_BY_MONTH = [5,5,7,10,14,18,20,20,17,13,9,6];   // °C, Jan→Dec
+  const POND = {
+    winter: {
+      fish: 'Fish resting quietly near the bottom. Feeding paused for winter, exactly as it should be. Water clear.',
+      irr: ['Paused', 'Winter', 'Garden irrigation is paused for winter and restarts automatically in spring.'],
+      topups: 0, topupNote: 'Rain is keeping the pond topped up.',
+      events: [[35,'pH reading confirmed stable at 7.2','no action required'],[170,'Ice vent checked','surface open for the fish'],[420,'Overnight low of 1°C logged','all systems unaffected'],[1500,'Weekly system check completed','all sensors calibrated']]
+    },
+    spring: {
+      fish: 'Fish waking up and feeding lightly as the water warms. Water clarity good.',
+      irr: ['Scheduled', '06:30', 'Next watering tomorrow at 06:30, a light run while the beds establish.'],
+      topups: 1, topupNote: 'Last top-up ran early this morning.',
+      events: [[40,'pH reading confirmed stable at 7.2','no action required'],[180,'Auto top-up activated','level restored to 78% in 3 mins'],[195,'Water level dipped to 64%','top-up triggered automatically','warn'],[1500,'Weekly system check completed','all sensors calibrated']]
+    },
+    summer: {
+      fish: 'Koi active and surface-feeding. Water clarity excellent. No algae alerts this week.',
+      irr: ['Scheduled', '06:30', 'Next watering cycle tomorrow at 06:30. Skipped today, rainfall detected overnight (4.2mm).'],
+      topups: 2, topupNote: 'Last activated this morning.',
+      events: [[40,'pH reading confirmed stable at 7.2','no action required'],[160,'Auto top-up activated','level restored to 78% in 4 mins'],[290,'Water level dipped to 64%','top-up triggered automatically','warn'],[330,'Irrigation skipped','4.2mm rainfall detected overnight'],[1500,'Weekly system check completed','all sensors calibrated']]
+    },
+    autumn: {
+      fish: 'Fish slowing down as the water cools. Feeding reduced to a light autumn diet. Leaf net in place.',
+      irr: ['Rain-led', 'Paused', 'Skipped, 4.2mm of rain overnight. Watering now runs only in dry spells.'],
+      topups: 0, topupNote: 'Autumn rain is keeping levels up.',
+      events: [[38,'pH reading confirmed stable at 7.2','no action required'],[150,'Skimmer cleared of leaves','flow back to full rate'],[330,'Irrigation skipped','4.2mm rainfall overnight'],[1500,'Weekly system check completed','all sensors calibrated']]
+    }
+  };
+  (function(){
+    const now = new Date();
+    const P = POND[gesSeason(now)];
+    const t = POND_TEMP_BY_MONTH[now.getMonth()] + 0.3;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('p-temp', t.toFixed(1));
+    document.getElementById('p-temp-bar').style.width = Math.round(t / 25 * 100) + '%';
+    set('p-topups', P.topups);
+    document.getElementById('p-topups-bar').style.width = (P.topups * 10) + '%';
+    set('p-topup-sub', 'Level at 78% — top-up triggers below 65%. ' + P.topupNote);
+    set('p-irr-badge', P.irr[0]); set('p-irr-main', P.irr[1]); set('p-irr-sub', P.irr[2]);
+    set('p-fish', P.fish);
+    const minsToday = now.getHours() * 60 + now.getMinutes();
+    document.getElementById('p-events').innerHTML = P.events.map(([ago, text, dim, kind]) => {
+      const when = new Date(now.getTime() - ago * 60000);
+      const label = ago > minsToday ? 'Yesterday' : when.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+      return `<div class="event"><div class="event-time">${label}</div><div class="event-dot${kind ? ' ' + kind : ''}"></div>` +
+             `<div class="event-text">${text} <span class="dim">— ${dim}</span></div></div>`;
+    }).join('');
+  })();
+
+  // ─── BIRD LISTENING — "last heard" ───
+  // DEMO: picks realistic birds for the season and "hears" a new one every few minutes.
+  // LIVE (later): replace demoHeard() with the latest detection from Home Assistant
+  // (BirdNET-Go), and fill the "heard today" list from the day's detections.
+  (function(){
+    const BIRDS = {   // [name, how often heard] — matches the veg plot assistant's notes
+      winter: [['Robin',5],['Blackbird',4],['Wren',3],['Wood pigeon',3],['Dunnock',2],['Goldfinch',2],['Long-tailed tit',1],['Redwing',1],['Great spotted woodpecker',1]],
+      spring: [['Blackbird',5],['Blue tit',4],['Robin',4],['Great tit',3],['Chiffchaff',3],['Blackcap',3],['Wren',3],['Goldfinch',2],['Dunnock',2]],
+      summer: [['Blackbird',4],['Robin',3],['Goldfinch',3],['Wren',3],['Blue tit',3],['Wood pigeon',3],['Chiffchaff',2],['Swift',2],['House martin',2]],
+      autumn: [['Robin',5],['Blackbird',4],['Wren',4],['Wood pigeon',3],['Jay',2],['Dunnock',2],['Goldfinch',2],['Long-tailed tit',1],['Song thrush',1],['Redwing',1]]
+    };
+    // Rough first and last light by month (UK), so the garden goes quiet at night
+    const DAWN = [8,7,6,6,5,5,5,5,6,7,7,8], DUSK = [16,17,18,20,21,21,21,20,19,18,16,16];
+
+    const pill = document.getElementById('birdPill');
+    const nameEl = document.getElementById('birdName');
+    const agoEl = document.getElementById('birdAgo');
+    const labelEl = document.getElementById('birdLabel');
+    const list = BIRDS[gesSeason(new Date())];
+    const pick = () => { let r = Math.random() * list.reduce((a, b) => a + b[1], 0);
+                         for (const [n, w] of list) { if ((r -= w) <= 0) return n; } return list[0][0]; };
+    const hhmm = d => d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+
+    let bird = pick();
+    let heardAt = new Date(Date.now() - (2 + Math.floor(Math.random() * 12)) * 60000);
+    let nightSet = false;
+
+    function isDaylight(d) { const h = d.getHours(), m = d.getMonth(); return h >= DAWN[m] && h < DUSK[m]; }
+
+    function render() {
+      const now = new Date();
+      if (!isDaylight(now)) {
+        // Overnight: show the last bird of the evening, no live animation
+        if (!nightSet) {
+          nightSet = true;
+          const dusk = new Date(now); if (now.getHours() < DAWN[now.getMonth()]) dusk.setDate(dusk.getDate() - 1);
+          dusk.setHours(DUSK[dusk.getMonth()] - 1, 30 + Math.floor(Math.random() * 25), 0, 0);
+          heardAt = dusk; bird = 'Robin';   // robins are usually the last to sing
+        }
+        pill.classList.add('quiet');
+        labelEl.textContent = 'Quiet overnight · Last heard';
+        nameEl.textContent = bird;
+        agoEl.textContent = 'at ' + hhmm(heardAt);
+        return;
+      }
+      nightSet = false;
+      pill.classList.remove('quiet');
+      labelEl.textContent = 'Listening · Last heard';
+      const mins = Math.max(0, Math.round((now - heardAt) / 60000));
+      nameEl.textContent = bird;
+      agoEl.textContent = mins < 1 ? 'just now' : mins === 1 ? '1 min ago' : mins + ' min ago';
+    }
+
+    function demoHeard() {
+      if (!isDaylight(new Date()) || Math.random() > 0.3) return;   // a new bird roughly every few minutes
+      let next = pick(); if (next === bird) next = pick();
+      nameEl.style.opacity = 0;
+      setTimeout(() => { bird = next; heardAt = new Date(); render(); nameEl.style.opacity = 1; }, 600);
+    }
+
+    // "Heard today" — revealed on tap
+    const today = [...new Set([bird, ...Array.from({ length: 14 }, pick)])].slice(0, 7);
+    document.getElementById('birdToday').textContent = 'Heard today: ' + today.join(', ') + '.';
+    const toggle = () => { const o = pill.classList.toggle('open'); pill.setAttribute('aria-expanded', o); };
+    pill.addEventListener('click', toggle);
+    pill.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+
+    render();
+    setInterval(() => { demoHeard(); render(); }, 60000);
+  })();
 </script>
 
 
@@ -745,10 +915,7 @@ nav.ges-hub-nav a svg {
   }
 }
 </style>
-<a class="ges-exit" href="ges-landing.html#cta" aria-label="Back to Landing">
-  <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-  Back to Landing
-</a>
+
 
 <nav class="ges-hub-nav" aria-label="GES navigation">
   <a href="garden-portal.html" class="active">
@@ -771,6 +938,24 @@ nav.ges-hub-nav a svg {
       .then(() => console.log('GES: Service worker registered'))
       .catch(err => console.log('GES: SW registration failed', err));
   }
+</script>
+<script>
+/* Demo visitors who arrive from the landing page get a "Home" link in the
+   bottom navigation. A client opening their own portal never sees it. */
+(function(){
+  var demo = false;
+  try {
+    if (/ges-landing/.test(document.referrer) || /[?&]demo/.test(location.search)) sessionStorage.setItem('gesDemo','1');
+    demo = sessionStorage.getItem('gesDemo') === '1';
+  } catch (e) { demo = /ges-landing/.test(document.referrer); }
+  if (!demo) return;
+  var nav = document.querySelector('nav.ges-hub-nav');
+  if (!nav) return;
+  var a = document.createElement('a');
+  a.href = 'ges-landing.html#cta';
+  a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Home';
+  nav.insertBefore(a, nav.firstChild);
+})();
 </script>
 </body>
 </html>

@@ -627,11 +627,11 @@
     </div>
     <div class="hero-stats">
       <div class="hero-stat">
-        <div class="hero-stat-val">21<span>°C</span></div>
+        <div class="hero-stat-val"><span id="v-hero-soil">21</span><span>°C</span></div>
         <div class="hero-stat-label">Soil Temp</div>
       </div>
       <div class="hero-stat">
-        <div class="hero-stat-val">64<span>%</span></div>
+        <div class="hero-stat-val"><span id="v-hero-moist">64</span><span>%</span></div>
         <div class="hero-stat-label">Moisture</div>
       </div>
     </div>
@@ -645,7 +645,6 @@
       <span class="assistant-icon">🌿</span>
       <div>
         <div class="assistant-title">Ask about your garden</div>
-        <div class="assistant-sub">What do my tomatoes need this weekend? · Is it a good day to plant? · What should the kids pick?</div>
       </div>
     </div>
     <div class="assistant-form">
@@ -665,12 +664,7 @@
         </span>
       </button>
     </div>
-    <div class="assistant-suggestions">
-      <button class="suggestion-chip" onclick="askSuggestion(this)">What do my tomatoes need this weekend?</button>
-      <button class="suggestion-chip" onclick="askSuggestion(this)">Is it a good time to water today?</button>
-      <button class="suggestion-chip" onclick="askSuggestion(this)">What can we pick right now?</button>
-      <button class="suggestion-chip" onclick="askSuggestion(this)">Anything the kids can do in the garden?</button>
-    </div>
+    <div class="assistant-suggestions" id="v-chips"></div>
     <div class="assistant-response" id="assistantResponse" style="display:none">
       <div class="response-bar"></div>
       <div class="response-text" id="responseText"></div>
@@ -690,7 +684,7 @@
         <div class="sensor-icon">🌡</div>
         <div class="sensor-info">
           <div class="sensor-name">Soil Temperature</div>
-          <div class="sensor-val">21<small>°C</small></div>
+          <div class="sensor-val"><span id="v-soil">21</span><small>°C</small></div>
         </div>
         <div class="sensor-status ok">Good</div>
       </div>
@@ -699,7 +693,7 @@
         <div class="sensor-icon">💧</div>
         <div class="sensor-info">
           <div class="sensor-name">Soil Moisture</div>
-          <div class="sensor-val">64<small>%</small></div>
+          <div class="sensor-val"><span id="v-moist">64</span><small>%</small></div>
         </div>
         <div class="sensor-status ok">Optimal</div>
       </div>
@@ -708,7 +702,7 @@
         <div class="sensor-icon">☀</div>
         <div class="sensor-info">
           <div class="sensor-name">Air Temp</div>
-          <div class="sensor-val">19<small>°C</small></div>
+          <div class="sensor-val"><span id="v-air">19</span><small>°C</small></div>
         </div>
         <div class="sensor-status ok">Good</div>
       </div>
@@ -722,20 +716,20 @@
 
     <div class="irrigation-block active">
       <div class="irrigation-label">Next Scheduled Run</div>
-      <div class="irrigation-val">18:30 today</div>
-      <div class="irrigation-sub">Est. 25 min · All zones</div>
+      <div class="irrigation-val" id="v-next">18:30 today</div>
+      <div class="irrigation-sub" id="v-next-sub">Est. 25 min · All zones</div>
     </div>
 
     <div class="irrigation-block">
       <div class="irrigation-label">Last Irrigation</div>
-      <div class="irrigation-val">06:00 today</div>
-      <div class="irrigation-sub">24 min run · 38 L used</div>
+      <div class="irrigation-val" id="v-last">06:00 today</div>
+      <div class="irrigation-sub" id="v-last-sub">24 min run · 38 L used</div>
     </div>
 
     <div class="irrigation-block">
       <div class="irrigation-label">This Week Total</div>
-      <div class="irrigation-val">186 L</div>
-      <div class="irrigation-sub">Fri–Fri · 6 runs completed</div>
+      <div class="irrigation-val" id="v-week">186 L</div>
+      <div class="irrigation-sub" id="v-week-sub">6 runs completed</div>
     </div>
 
   </div>
@@ -750,7 +744,7 @@
         <div class="status-icon">💧</div>
         <div class="status-body">
           <div class="status-name">Irrigation</div>
-          <div class="status-detail">Scheduled · running normally</div>
+          <div class="status-detail" id="v-irr-status">Scheduled · running normally</div>
         </div>
         <div class="status-badge ok">OK</div>
       </div>
@@ -768,7 +762,7 @@
         <div class="status-icon">⚙</div>
         <div class="status-body">
           <div class="status-name">Drip Lines</div>
-          <div class="status-detail">Last checked Wed 21 May</div>
+          <div class="status-detail" id="v-drip">Checked on the last visit</div>
         </div>
         <div class="status-badge ok">OK</div>
       </div>
@@ -777,7 +771,7 @@
         <div class="status-icon">🕐</div>
         <div class="status-body">
           <div class="status-name">Timer Schedule</div>
-          <div class="status-detail">06:00 &amp; 18:30 daily</div>
+          <div class="status-detail" id="v-timer">06:00 &amp; 18:30 daily</div>
         </div>
         <div class="status-badge ok">Active</div>
       </div>
@@ -799,75 +793,26 @@
     <div class="panel-label">Local Conditions</div>
 
     <div class="weather-row">
-      <div class="weather-temp">19<sup>°C</sup></div>
+      <div class="weather-temp"><span id="v-wx-temp">19</span><sup>°C</sup></div>
       <div>
-        <div class="weather-desc">Partly cloudy · SW 12mph</div>
-        <div class="weather-sub">Humidity 68% · UV 5 moderate</div>
+        <div class="weather-desc" id="v-wx-desc">Partly cloudy · SW 12mph</div>
+        <div class="weather-sub" id="v-wx-sub">Humidity 68% · UV 5 moderate</div>
       </div>
     </div>
 
-    <div class="forecast-strip">
-      <div class="forecast-day">
-        <div class="forecast-day-name">Fri</div>
-        <div class="forecast-icon">🌤</div>
-        <div class="forecast-hi">21°</div>
-        <div class="forecast-lo">13°</div>
-      </div>
-      <div class="forecast-day">
-        <div class="forecast-day-name">Sat</div>
-        <div class="forecast-icon">⛅</div>
-        <div class="forecast-hi">18°</div>
-        <div class="forecast-lo">11°</div>
-      </div>
-      <div class="forecast-day">
-        <div class="forecast-day-name">Sun</div>
-        <div class="forecast-icon">🌧</div>
-        <div class="forecast-hi">15°</div>
-        <div class="forecast-lo">10°</div>
-      </div>
-      <div class="forecast-day">
-        <div class="forecast-day-name">Mon</div>
-        <div class="forecast-icon">🌦</div>
-        <div class="forecast-hi">17°</div>
-        <div class="forecast-lo">11°</div>
-      </div>
-      <div class="forecast-day">
-        <div class="forecast-day-name">Tue</div>
-        <div class="forecast-icon">☀</div>
-        <div class="forecast-hi">23°</div>
-        <div class="forecast-lo">14°</div>
-      </div>
-    </div>
+    <div class="forecast-strip" id="v-forecast"></div>
   </div>
 
   <!-- NOTES -->
   <div class="panel panel-notes">
     <div class="panel-label">GES Notes</div>
-
-    <div class="note-entry">
-      <div class="note-date">Wed 21 May</div>
-      <div class="note-text">Soil moisture sensor calibrated. Irrigation schedule confirmed for current season. Next service visit in 3 weeks.</div>
-    </div>
-
-    <div class="note-entry">
-      <div class="note-date">Mon 19 May</div>
-      <div class="note-text">Summer seedlings planted out across beds 1–4. Fleece removed from brassicas — temps stable.</div>
-    </div>
-
-    <div class="note-entry">
-      <div class="note-date">Sat 17 May</div>
-      <div class="note-text">Slow-release granules applied. Drip irrigation tested — all zones performing correctly.</div>
-    </div>
-
+    <div id="v-notes"></div>
   </div>
 
 </div>
 
 <!-- ─── HUB NAV DOCK ─── -->
-<a class="ges-exit" href="ges-landing.html#cta" aria-label="Back to Landing">
-  <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-  Back to Landing
-</a>
+
 
 <nav class="ges-hub-nav" aria-label="GES navigation">
   <a href="garden-portal.html">
@@ -895,102 +840,289 @@
   updateTime();
   setInterval(updateTime, 1000);
 
+
+  // Season from today's date (UK): Dec–Feb winter, Mar–May spring, Jun–Aug summer, Sep–Nov autumn
+  function gesSeason(d){ var m = d.getMonth(); return (m === 11 || m < 2) ? 'winter' : m < 5 ? 'spring' : m < 8 ? 'summer' : 'autumn'; }
+  function gesDaysAgo(n){ var d = new Date(); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }); }
+
+  // ════════════════════════════════════════════════════════════
+  //  SETTINGS — the only lines you would normally change
+  // ════════════════════════════════════════════════════════════
+  // Paste your Cloudflare Worker address between the quotes once it is set up.
+  // While it is empty, the "Ask about your garden" box stays hidden, so a
+  // client never sees a feature that cannot answer them.
+  const ASSISTANT_URL = '';
+  // Where local weather comes from (demo: Guildford, Surrey). Change per client.
+  const PLOT_LAT = 51.24, PLOT_LON = -0.57;
+
+  // ════════════════════════════════════════════════════════════
+  //  SITE PROFILE — the one-off facts filled in at set-up
+  //  (this is what the site visit sheet will collect for each client).
+  //  The assistant uses these to tailor every answer. DEMO values below.
+  // ════════════════════════════════════════════════════════════
+  const SITE_PROFILE = [
+    'Property: Hartley Estate (demo), Surrey Hills edge near Guildford. Kitchen garden beside the house.',
+    'Layout: 16 raised timber beds, 40cm high. Beds 1–8 are the main crop beds with soil sensors; beds 9–16 hold soft fruit, herbs and cut flowers. 8x10ft greenhouse at the north end. Two compost bays.',
+    'Aspect: south-facing, full sun from about 9am to 5pm in summer. Beds 1 and 2 get the most sun; bed 8 is shaded by the beech hedge after 3pm.',
+    'Shelter: 2m beech hedge on the north side. The western end catches south-westerly wind; fleece and netting there need extra pegging.',
+    'Soil: native clay loam; beds filled with topsoil and compost mix, pH about 6.8, drains well. Mulched with home compost each autumn.',
+    'Frost: a slight frost pocket at the bottom of the lawn, not in the kitchen garden. Typical last frost late April, first frost late October.',
+    'Water: drip irrigation on all 8 crop beds, run from a timer; water butt by the greenhouse.',
+    'Wildlife: hedgehog house under the hedge; frogs and newts from the pond nearby. Hanging feeder by the kitchen window (currently peanuts) and a ground tray.',
+    'Bird listening station near the feeders identifies birds by song, around the clock.',
+    'Family: two children, aged 8 and 11, who love picking, worm hunts and anything with a job attached. Family cooks with what they grow.',
+    'Owners prefer: organic methods, no slug pellets (hedgehogs), low-fuss advice.'
+  ];
+
+  // Birds heard by the listening station over the last 14 days (DEMO, by season)
+  const BIRDS = {
+    winter: 'Robin (daily), blackbird (daily), dunnock (most days), wren (most days), long-tailed tit (flock of 8, every few days), goldfinch (most days), wood pigeon (daily), redwing (several, after frosty nights), great spotted woodpecker (twice). Hardly any blue or great tits at the peanut feeder.',
+    spring: 'Blue tit (daily, pair nesting in the oak birdbox), great tit (daily), robin (daily), blackbird (daily, nesting in the hedge), chiffchaff (most days), blackcap (most days), goldfinch (daily), wren (daily), dunnock (most days).',
+    summer: 'Blackbird (daily), robin (daily), goldfinch (daily, family groups), wren (daily), blue tit (fledglings, daily), chiffchaff (most days), house martin (overhead, daily), swift (overhead, most evenings), wood pigeon (daily).',
+    autumn: 'Robin (daily), blackbird (daily), wren (daily), dunnock (most days), long-tailed tit (flock of 8, every few days), goldfinch (most days), song thrush (a few times), jay (most days, taking acorns), redwing (first ones heard this week), wood pigeon (daily). Hardly any blue or great tits at the peanut feeder.'
+  };
+  const BIRD_CHIP = {
+    winter: 'Should we put peanuts out for the birds?',
+    spring: 'Is it OK to feed the birds while they\'re nesting?',
+    summer: 'Should we keep feeding the birds in summer?',
+    autumn: 'Should we put peanuts out for the birds?'
+  };
+
+  // ════════════════════════════════════════════════════════════
+  //  DEMO GARDEN — switches automatically with the season, so the
+  //  demo never shows May notes in November (or tomatoes in January)
+  // ════════════════════════════════════════════════════════════
+  const SOIL_BY_MONTH = [4,4,6,9,13,17,19,19,16,12,8,5];   // °C at 10cm, Jan→Dec, typical south-east England
+  const AIR_BY_MONTH  = [6,7,9,12,16,19,21,21,18,14,10,7];
+
+  const SEASONS = {
+    winter: {
+      moisture: 78,
+      irrStatus: 'Paused for winter', timer: 'Off until spring',
+      next: ['Paused', 'Restarts automatically in spring'],
+      last: ['Early October', 'Final run of the season'],
+      week: ['0 L', 'The rain is doing the work'],
+      drip: 'Drained and stored for winter',
+      beds: [
+        'Beds 1 & 2: Garlic and overwintering onions, planted in October',
+        'Bed 3: Broad beans (Aquadulce Claudia), sown in November',
+        'Bed 4: Leeks (Musselburgh), ready to lift as needed',
+        'Bed 5: Winter salad under fleece, lamb\'s lettuce and mizuna',
+        'Bed 6: Parsnips, sweeter after frost, ready to lift',
+        'Bed 7: Kale and chard, pick the outer leaves',
+        'Bed 8: Resting under a compost mulch for spring'
+      ],
+      notes: [
+        [4,  'Leeks and parsnips checked, both lifting well. Fleece secure over the winter salads.'],
+        [11, 'Beds 6 and 8 mulched with compost. Paths cleared of leaves.'],
+        [18, 'Frost protection checked. Garlic and broad beans showing through.']
+      ],
+      chips: ['What can we pick this week?', 'Is anything at risk from frost?', 'What should we plan for spring?', 'Anything the kids can do outside in winter?'],
+      wx: { desc: 'Cold and bright · NW 8mph', sub: 'Humidity 85% · UV 1 low', days: [['🌤',7,1],['☁',6,2],['🌧',8,4],['⛅',7,2],['🌤',6,0]] }
+    },
+    spring: {
+      moisture: 58,
+      irrStatus: 'Light watering as needed', timer: '06:00 on alternate days',
+      next: ['06:00 tomorrow', 'Est. 12 min · All zones'],
+      last: ['06:00 yesterday', '12 min run · 18 L used'],
+      week: ['54 L', '3 runs completed'],
+      drip: 'Flushed and tested for the season',
+      beds: [
+        'Beds 1 & 2: Tomatoes (Gardener\'s Delight, Moneymaker) hardening off in the greenhouse, out after the last frost',
+        'Bed 3: Courgettes (Defender F1) growing on in pots in the greenhouse',
+        'Bed 4: French beans (Blue Lake) to sow direct in mid-May',
+        'Bed 5: Lettuce mix (Little Gem, Lollo Rosso) sown, first leaves coming',
+        'Bed 6: Beetroot (Boltardy) sown direct',
+        'Bed 7: Kale and chard, cut-and-come-again',
+        'Bed 8: First early potatoes (Charlotte) planted'
+      ],
+      notes: [
+        [3,  'Beetroot and lettuce sown direct. Beds top-dressed with compost.'],
+        [9,  'Drip irrigation flushed and tested. All zones running well.'],
+        [16, 'First early potatoes planted in bed 8. Fleece on standby for late frosts.']
+      ],
+      chips: ['When can the tomatoes go out?', 'Is it a good day to sow?', 'What can we pick right now?', 'Anything the kids can plant this weekend?'],
+      wx: { desc: 'Bright spells · SW 10mph', sub: 'Humidity 70% · UV 3 moderate', days: [['🌤',14,6],['🌦',12,5],['⛅',13,6],['🌤',15,7],['☀',16,7]] }
+    },
+    summer: {
+      moisture: 64,
+      irrStatus: 'Scheduled · running normally', timer: '06:00 & 18:30 daily',
+      next: ['18:30 today', 'Est. 25 min · All zones'],
+      last: ['06:00 today', '24 min run · 38 L used'],
+      week: ['186 L', '6 runs completed'],
+      drip: 'Checked on the last visit, no blockages',
+      beds: [
+        'Beds 1 & 2: Tomatoes (Gardener\'s Delight, Moneymaker), side-shooting and tying in',
+        'Bed 3: Courgettes (Defender F1), cropping',
+        'Bed 4: French beans (Blue Lake), climbing well',
+        'Bed 5: Lettuce mix (Little Gem, Lollo Rosso), ready to pick',
+        'Bed 6: Beetroot (Boltardy), lifting from golf-ball size',
+        'Bed 7: Kale and chard, cut-and-come-again, ready now',
+        'Bed 8: Cucumbers (Marketmore), first fruits forming'
+      ],
+      notes: [
+        [2,  'Irrigation confirmed working. Sensor calibrated. Lettuce hearting up nicely.'],
+        [9,  'Tomatoes side-shooted and tied in. Courgettes cropping.'],
+        [16, 'Slow-release feed applied to all beds. Drip emitters checked, no blockages.']
+      ],
+      chips: ['What do my tomatoes need this weekend?', 'Is it a good time to water today?', 'What can we pick right now?', 'Anything the kids can do in the garden?'],
+      wx: { desc: 'Partly cloudy · SW 12mph', sub: 'Humidity 68% · UV 5 moderate', days: [['🌤',21,13],['⛅',18,11],['🌧',15,10],['🌦',17,11],['☀',23,14]] }
+    },
+    autumn: {
+      moisture: 72,
+      irrStatus: 'Rain-led · runs only in dry spells', timer: 'Rain-led, dry spells only',
+      next: ['Not needed', 'Recent rain has the beds well watered'],
+      last: ['Over a week ago', '10 min run · 14 L used'],
+      week: ['0 L', 'The rain is doing the work'],
+      drip: 'Checked on the last visit, no blockages',
+      beds: [
+        'Beds 1 & 2: Summer tomatoes cleared; garlic planted for next summer',
+        'Bed 3: Broad beans (Aquadulce Claudia) sown to overwinter',
+        'Bed 4: Leeks (Musselburgh) thickening up, ready from late autumn',
+        'Bed 5: Winter salads under fleece, lamb\'s lettuce and mizuna',
+        'Bed 6: Last of the beetroot; parsnips sizing up',
+        'Bed 7: Kale and chard, cut-and-come-again, ready now',
+        'Bed 8: Green manure sown to protect the soil over winter'
+      ],
+      notes: [
+        [3,  'Garlic planted in beds 1 and 2. Green manure sown in bed 8.'],
+        [10, 'Summer crops cleared and composted. Irrigation switched to rain-led.'],
+        [17, 'Fleece fitted over the winter salads in bed 5. Last of the beetroot lifted.']
+      ],
+      chips: ['What can we pick this week?', 'Should we protect anything from frost?', 'What\'s worth planting now?', 'Anything the kids can do this weekend?'],
+      wx: { desc: 'Cloudy spells · SW 12mph', sub: 'Humidity 82% · UV 1 low', days: [['🌦',12,6],['🌧',11,7],['⛅',10,4],['🌤',11,3],['☁',12,6]] }
+    }
+  };
+
+  const today = new Date();
+  const S = SEASONS[gesSeason(today)];
+  const month = today.getMonth();
+  const setText = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+
+  const soil = SOIL_BY_MONTH[month];
+  let air = AIR_BY_MONTH[month];
+  let weatherSummary = '';
+  setText('v-hero-soil', soil); setText('v-soil', soil);
+  setText('v-hero-moist', S.moisture); setText('v-moist', S.moisture);
+  setText('v-air', air);
+  setText('v-next', S.next[0]); setText('v-next-sub', S.next[1]);
+  setText('v-last', S.last[0]); setText('v-last-sub', S.last[1]);
+  setText('v-week', S.week[0]); setText('v-week-sub', S.week[1]);
+  setText('v-irr-status', S.irrStatus); setText('v-drip', S.drip); setText('v-timer', S.timer);
+
+  document.getElementById('v-notes').innerHTML = S.notes.map(([d, t]) =>
+    `<div class="note-entry"><div class="note-date">${gesDaysAgo(d)}</div><div class="note-text">${t}</div></div>`).join('');
+
+  const chipBox = document.getElementById('v-chips');
+  [...S.chips, BIRD_CHIP[gesSeason(today)]].forEach(q => {
+    const b = document.createElement('button');
+    b.className = 'suggestion-chip'; b.textContent = q;
+    b.addEventListener('click', () => askSuggestion(b));
+    chipBox.appendChild(b);
+  });
+
+  function drawForecast(days) {
+    document.getElementById('v-forecast').innerHTML = days.map(([name, icon, hi, lo]) =>
+      `<div class="forecast-day"><div class="forecast-day-name">${name}</div><div class="forecast-icon">${icon}</div><div class="forecast-hi">${hi}°</div><div class="forecast-lo">${lo}°</div></div>`).join('');
+  }
+  // Seasonal fallback first, so the panel is never empty or out of season
+  setText('v-wx-temp', air); setText('v-wx-desc', S.wx.desc); setText('v-wx-sub', S.wx.sub);
+  drawForecast(S.wx.days.map((d, i) => {
+    const day = new Date(); day.setDate(day.getDate() + i + 1);
+    return [day.toLocaleDateString('en-GB', { weekday:'short' }), ...d];
+  }));
+
+  // Real local weather (Open-Meteo: free, no key, nothing to maintain)
+  const WX = c => c === 0 ? ['☀','Clear'] : c <= 1 ? ['🌤','Mostly clear'] : c === 2 ? ['⛅','Partly cloudy'] : c === 3 ? ['☁','Overcast']
+    : c <= 48 ? ['🌫','Mist'] : c <= 57 ? ['🌦','Drizzle'] : c <= 67 ? ['🌧','Rain'] : c <= 77 ? ['🌨','Snow']
+    : c <= 82 ? ['🌦','Showers'] : c <= 86 ? ['🌨','Snow showers'] : ['⛈','Thunder'];
+  const COMPASS = d => ['N','NE','E','SE','S','SW','W','NW'][Math.round(d / 45) % 8];
+  const uvWord = u => u < 3 ? 'low' : u < 6 ? 'moderate' : u < 8 ? 'high' : 'very high';
+  fetch(`https://api.open-meteo.com/v1/forecast?latitude=${PLOT_LAT}&longitude=${PLOT_LON}` +
+        '&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m' +
+        '&daily=weather_code,temperature_2m_max,temperature_2m_min,uv_index_max' +
+        '&timezone=Europe%2FLondon&wind_speed_unit=mph&forecast_days=6')
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(w => {
+      const c = w.current, d = w.daily;
+      air = Math.round(c.temperature_2m);
+      const [, word] = WX(c.weather_code);
+      const uv = Math.round(d.uv_index_max[0]);
+      setText('v-air', air); setText('v-wx-temp', air);
+      setText('v-wx-desc', `${word} · ${COMPASS(c.wind_direction_10m)} ${Math.round(c.wind_speed_10m)}mph`);
+      setText('v-wx-sub', `Humidity ${Math.round(c.relative_humidity_2m)}% · UV ${uv} ${uvWord(uv)}`);
+      const days = [];
+      for (let i = 1; i <= 5; i++) {
+        days.push([new Date(d.time[i]).toLocaleDateString('en-GB', { weekday:'short' }), WX(d.weather_code[i])[0],
+                   Math.round(d.temperature_2m_max[i]), Math.round(d.temperature_2m_min[i])]);
+      }
+      drawForecast(days);
+      weatherSummary = `Now ${air}°C, ${word.toLowerCase()}. Next days: ` +
+        days.map(x => `${x[0]} ${WX(d.weather_code[days.indexOf(x) + 1])[1].toLowerCase()} ${x[2]}/${x[3]}°C`).join(', ') + '.';
+    })
+    .catch(() => {});   // keep the seasonal fallback quietly
+
   // ─── GARDEN ASSISTANT ───
+  if (!ASSISTANT_URL) document.querySelector('.assistant-wrap').style.display = 'none';
 
-  const GARDEN_CONTEXT = `You are the GES (Garden Ecology System) garden assistant for this client's private kitchen garden. Answer their questions in a warm, knowledgeable, friendly tone — like a head gardener who knows their plot well. Be specific to their actual conditions. Keep answers practical and encouraging, not overwhelming. If kids are mentioned, include something fun and safe they can do.
+  function buildContext() {
+    return [
+      'SITE PROFILE:\n- ' + SITE_PROFILE.join('\n- '),
+      'TODAY: ' + today.toLocaleDateString('en-GB', { weekday:'long', day:'numeric', month:'long', year:'numeric' }) + ' (' + gesSeason(today) + ')',
+      'BIRDS HEARD IN THE LAST 14 DAYS (listening station): ' + BIRDS[gesSeason(today)],
+      `READINGS: soil ${soil}°C, soil moisture ${S.moisture}%, air ${air}°C. Irrigation: ${S.irrStatus}.`,
+      weatherSummary ? 'WEATHER: ' + weatherSummary : '',
+      'WHAT\'S GROWING:\n- ' + S.beds.join('\n- '),
+      'RECENT GES VISITS:\n- ' + S.notes.map(([d, t]) => gesDaysAgo(d) + ': ' + t).join('\n- '),
+      'Next GES visit in about two weeks.'
+    ].filter(Boolean).join('\n');
+  }
 
-PROPERTY:
-- South-facing raised beds, sheltered, UK
-- 8 raised timber beds (~3m x 1.2m each)
-- Today: ${new Date().toLocaleDateString('en-GB', {weekday:'long', day:'numeric', month:'long', year:'numeric'})}
-
-CURRENT READINGS:
-- Soil temp: 21°C · Soil moisture: 64% (optimal, no watering needed today)
-- Last irrigation: today 06:00 · Next: today 18:30
-- Dry week, 17–21°C days, 10–13°C nights. Rain forecast Sunday.
-
-WHAT'S GROWING:
-- Beds 1 & 2: Tomatoes (Gardener's Delight + Moneymaker), planted out 19 May
-- Bed 3: Courgettes (Defender F1), planted out 19 May
-- Bed 4: French beans (Blue Lake), sown 12 May
-- Bed 5: Lettuce mix (Little Gem, Lollo Rosso) — approaching ready to pick
-- Bed 6: Beetroot (Boltardy), sown 5 May
-- Bed 7: Kale and chard — cut-and-come-again, ready now
-- Bed 8: Cucumbers (Marketmore), planted out 19 May
-
-RECENT VISIT LOG:
-- Wed 21 May (GES): Irrigation confirmed working. Sensor calibrated. Lettuce starting to heart up. Everything looking healthy.
-- Mon 19 May (GES): Summer seedlings planted out. Fleece removed — temperatures stable.
-- Sat 17 May (GES): Slow-release fertiliser applied to all beds. Drip emitters checked, no blockages. Paths weeded.
-- Mon 5 May (GES): Lettuce and beetroot sown direct. Beds top-dressed with compost.
-
-NOTES: No pest issues. Tomatoes will need first side-shooting soon. Lettuce in bed 5 may be ready to start picking outer leaves. Next GES visit in ~3 weeks.`;
+  const esc = t => t.replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const toHtml = t => esc(t).split(/\n{2,}/).filter(p => p.trim())
+    .map(p => '<p>' + p.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>') + '</p>').join('');
 
   async function askGarden(query) {
+    query = (query || '').trim();
+    if (!query || !ASSISTANT_URL) return;
     const btn = document.getElementById('askBtn');
     const btnText = document.getElementById('askBtnText');
     const spinner = document.getElementById('askBtnSpinner');
     const responseDiv = document.getElementById('assistantResponse');
     const responseText = document.getElementById('responseText');
 
-    if (!query.trim()) return;
-
-    btn.disabled = true;
-    btnText.style.display = 'none';
-    spinner.style.display = 'flex';
+    btn.disabled = true; btnText.style.display = 'none'; spinner.style.display = 'flex';
     responseDiv.style.display = 'none';
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch(ASSISTANT_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
-          system: GARDEN_CONTEXT,
-          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-          messages: [{ role: 'user', content: query }]
-        })
+        body: JSON.stringify({ question: query, context: buildContext() })
       });
-
-      const data = await response.json();
-      const text = (data.content || [])
-        .filter(b => b.type === 'text')
-        .map(b => b.text)
-        .join('\n')
-        .trim();
-
-      responseText.innerHTML = text
-        .split('\n\n')
-        .filter(p => p.trim())
-        .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`)
-        .join('');
-
-      responseDiv.style.display = 'flex';
-      responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
+      const data = await res.json();
+      if (!res.ok || !data.answer) throw new Error('no answer');
+      let html = toHtml(data.answer);
+      if (data.sources && data.sources.length) {
+        html += '<p style="opacity:.55;font-size:.85em">Sources: ' + data.sources.map(x =>
+          `<a href="${esc(x.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(x.title)}</a>`).join(' · ') + '</p>';
+      }
+      responseText.innerHTML = html;
     } catch (err) {
-      responseText.innerHTML = '<p>Sorry, couldn\'t reach the assistant right now. Try again in a moment.</p>';
-      responseDiv.style.display = 'flex';
+      responseText.innerHTML = '<p>The assistant is taking a moment. Please try again shortly.</p>';
     }
 
-    btn.disabled = false;
-    btnText.style.display = 'inline';
-    spinner.style.display = 'none';
+    responseDiv.style.display = 'flex';
+    responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    btn.disabled = false; btnText.style.display = 'inline'; spinner.style.display = 'none';
   }
 
-  document.getElementById('askBtn').addEventListener('click', () => {
-    askGarden(document.getElementById('gardenQuery').value);
-  });
-
-  document.getElementById('gardenQuery').addEventListener('keydown', e => {
-    if (e.key === 'Enter') askGarden(e.target.value);
-  });
+  document.getElementById('askBtn').addEventListener('click', () => askGarden(document.getElementById('gardenQuery').value));
+  document.getElementById('gardenQuery').addEventListener('keydown', e => { if (e.key === 'Enter') askGarden(e.target.value); });
 
   function askSuggestion(el) {
-    const q = el.textContent;
-    document.getElementById('gardenQuery').value = q;
-    askGarden(q);
+    document.getElementById('gardenQuery').value = el.textContent;
+    askGarden(el.textContent);
   }
 
 </script>
@@ -1001,6 +1133,24 @@ NOTES: No pest issues. Tomatoes will need first side-shooting soon. Lettuce in b
       .then(() => console.log('GES: Service worker registered'))
       .catch(err => console.log('GES: SW registration failed', err));
   }
+</script>
+<script>
+/* Demo visitors who arrive from the landing page get a "Home" link in the
+   bottom navigation. A client opening their own portal never sees it. */
+(function(){
+  var demo = false;
+  try {
+    if (/ges-landing/.test(document.referrer) || /[?&]demo/.test(location.search)) sessionStorage.setItem('gesDemo','1');
+    demo = sessionStorage.getItem('gesDemo') === '1';
+  } catch (e) { demo = /ges-landing/.test(document.referrer); }
+  if (!demo) return;
+  var nav = document.querySelector('nav.ges-hub-nav');
+  if (!nav) return;
+  var a = document.createElement('a');
+  a.href = 'ges-landing.html#cta';
+  a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Home';
+  nav.insertBefore(a, nav.firstChild);
+})();
 </script>
 </body>
 </html>

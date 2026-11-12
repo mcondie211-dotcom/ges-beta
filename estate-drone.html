@@ -130,7 +130,7 @@ main{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;ju
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:1rem">
-    <div class="chip"><span class="dot"></span>All systems active</div>
+    <div class="chip"><span class="dot"></span>All running smoothly</div>
     <div class="htime" id="htime"></div>
   </div>
 </header>
@@ -186,20 +186,28 @@ main{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;ju
   <div class="tip-stat"><span class="tip-sd"></span><span id="tip-stat-txt"></span></div>
 </div>
 
-<button class="cam-btn" id="cam-link" onclick="window.open('https://www.youtube.com/watch?v=x10vL6_47Dw','_blank','width=900,height=560,noopener')">
+<button class="cam-btn" id="cam-link" onclick="openCam()">
   <span class="cam-live"></span>
-  Birdbox — Live Feed
+  Birdbox Camera
   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
     <rect x="1" y="4" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.2" opacity="0.7"/>
     <path d="M11 7L15 5V11L11 9V7Z" fill="currentColor" opacity="0.7"/>
   </svg>
 </button>
 
+<!-- Birdbox camera pop-up (stays inside the portal) -->
+<div class="cam-modal" id="camModal" onclick="if(event.target===this)closeModal()">
+  <div class="cam-modal-inner">
+    <div class="cam-modal-header">
+      <div class="cam-modal-title"><span class="cam-modal-live"></span>Oak Tree Birdbox</div>
+      <button class="cam-modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    </div>
+    <div class="cam-modal-video"><iframe id="camFrame" title="Birdbox camera" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="cam-modal-note">Sample feed shown. Your own birdbox camera appears here once installed.</div>
+  </div>
+</div>
 
-<a class="ges-exit" href="ges-landing.html#cta" aria-label="Back to Landing">
-  <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-  Back to Landing
-</a>
+
 
 <script>
 function tick(){
@@ -282,10 +290,66 @@ document.querySelectorAll('.zone-hit').forEach(el=>{
 
 function closeModal(){
   document.getElementById('camModal').classList.remove('open');
-  // Reset iframe to stop video
-  const f=document.getElementById('camFrame');
-  f.src=f.src;
+  document.getElementById('camFrame').src = 'about:blank';   // stops the video
 }
+
+  // Season from today's date (UK): Dec–Feb winter, Mar–May spring, Jun–Aug summer, Sep–Nov autumn
+  function gesSeason(d){ var m = d.getMonth(); return (m === 11 || m < 2) ? 'winter' : m < 5 ? 'spring' : m < 8 ? 'summer' : 'autumn'; }
+  function gesDaysAgo(n){ var d = new Date(); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-GB', { weekday:'short', day:'numeric', month:'short' }); }
+
+// Seasonal wording for the map (summer uses the original text above)
+const ZS = {
+  winter: {
+    pool:{d:'Pool closed for winter. Cover on and frost protection running.',s:'Winterised · Cover on'},
+    vegplot:{d:'16 raised beds. Garlic, broad beans and leeks overwintering; kale and parsnips ready to pick. Resting beds mulched for spring.',s:'Winter crops ready'},
+    chickens:{d:'8 hens. Automatic door active — opens at dawn, closes at dusk. Laying has slowed for winter, as normal. Water kept ice-free.',s:'2 eggs today'},
+    pond:{d:'0.15 acre natural pond. pH 7.2 · Temp 6°C · Pump running. Fish resting for winter; ice vent keeping the surface open.',s:'Water quality excellent'},
+    birdbox:{d:'Camera-equipped birdbox in the old oak. Cleaned and empty for winter. Blue tits usually start nesting in March.',s:'Empty · Ready for spring'},
+    wildlife:{d:'0.2 acres of native wildflower meadow, cut and cleared in autumn. Seed heads left on the margins for the birds.',s:'Resting · No action needed'},
+    lawn:{d:'0.4 acres of managed lawn. Mowing paused for winter and kept off when frosted to protect the grass.',s:'Dormant · Healthy'},
+    orchard:{d:'12 trees — 4 apple, 3 pear, 2 plum, 2 cherry, 1 quince. Dormant. Winter pruning of the apples and pears is scheduled.',s:'Dormant · Pruning due'}
+  },
+  spring: {
+    pool:{d:'Heated pool with limestone terrace. Being brought back into use for the season. Filter running, cover closed.',s:'Opening for the season'},
+    vegplot:{d:'16 raised beds. Potatoes, beetroot and salads sown; tomatoes and courgettes hardening off in the greenhouse.',s:'Sowing season'},
+    chickens:{d:'8 hens. Automatic door active — opens at dawn, closes at dusk. Laying back to full strength. 6 eggs collected this morning.',s:'6 eggs today'},
+    pond:{d:'0.15 acre natural pond. pH 7.2 · Temp 11°C · Pump running. Frogspawn logged last week and the fish are feeding again.',s:'Water quality excellent'},
+    birdbox:{d:'Camera-equipped birdbox in the old oak. A pair of blue tits is nesting. Eggs laid this week.',s:'Occupied · Nesting'},
+    wildlife:{d:'0.2 acres of native wildflower meadow. Growth coming through well; the first cowslips are out.',s:'Growing · No action needed'},
+    lawn:{d:'0.4 acres of managed lawn. First cuts of the season done and spring feed applied.',s:'Healthy · Growing'},
+    orchard:{d:'12 trees — 4 apple, 3 pear, 2 plum, 2 cherry, 1 quince. Blossom out; frost watch active.',s:'In blossom'}
+  },
+  autumn: {
+    pool:{d:'Heated pool with limestone terrace. Cover closed and being prepared for its winter shutdown.',s:'Winterising'},
+    vegplot:{d:'16 raised beds. Summer crops cleared; garlic and broad beans in for next year. Leeks, kale and winter salads ready.',s:'Autumn crops ready'},
+    chickens:{d:'8 hens. Automatic door active — opens at dawn, closes at dusk. Moulting season, so laying is lighter. 3 eggs this morning.',s:'3 eggs today'},
+    pond:{d:'0.15 acre natural pond. pH 7.2 · Temp 9°C · Pump running. Leaf net in place; skimmer cleared this week.',s:'Water quality excellent'},
+    birdbox:{d:'Camera-equipped birdbox in the old oak. Cleaned and checked after the breeding season. Small birds sometimes roost here on cold nights.',s:'Empty · Cleaned'},
+    wildlife:{d:'0.2 acres of native wildflower meadow. Cut and raked for the year, with seed left to fall for next spring.',s:'Cut for the year'},
+    lawn:{d:'0.4 acres of managed lawn. Autumn feed applied and leaves cleared weekly. Mowing slowing down.',s:'Healthy'},
+    orchard:{d:'12 trees — 4 apple, 3 pear, 2 plum, 2 cherry, 1 quince. Harvest in and windfalls cleared. Leaf fall under way.',s:'Harvest complete'}
+  }
+};
+(function(){ const o = ZS[gesSeason(new Date())]; if (o) for (const k in o) Object.assign(Z[k], o[k]); })();
+
+// Birdbox camera pop-up. The video only loads when opened.
+const CAM_URL = 'https://www.youtube-nocookie.com/embed/x10vL6_47Dw?autoplay=1&mute=1&rel=0&modestbranding=1';
+function openCam(){
+  document.getElementById('camFrame').src = CAM_URL;
+  document.getElementById('camModal').classList.add('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// Phones have no "hover": tap an area to see its card, tap elsewhere to close
+document.querySelectorAll('.zone-hit').forEach(el => {
+  el.addEventListener('click', e => {
+    e.stopPropagation();
+    if (el.dataset.zone === 'birdbox') { hide(); openCam(); return; }
+    show(el.dataset.zone, e);
+  });
+});
+document.addEventListener('click', e => { if (!e.target.closest('.zone-hit')) hide(); });
+
 </script>
 
 <style>
@@ -362,6 +426,24 @@ nav.ges-hub-nav a svg {
       .then(() => console.log('GES: Service worker registered'))
       .catch(err => console.log('GES: SW registration failed', err));
   }
+</script>
+<script>
+/* Demo visitors who arrive from the landing page get a "Home" link in the
+   bottom navigation. A client opening their own portal never sees it. */
+(function(){
+  var demo = false;
+  try {
+    if (/ges-landing/.test(document.referrer) || /[?&]demo/.test(location.search)) sessionStorage.setItem('gesDemo','1');
+    demo = sessionStorage.getItem('gesDemo') === '1';
+  } catch (e) { demo = /ges-landing/.test(document.referrer); }
+  if (!demo) return;
+  var nav = document.querySelector('nav.ges-hub-nav');
+  if (!nav) return;
+  var a = document.createElement('a');
+  a.href = 'ges-landing.html#cta';
+  a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg>Home';
+  nav.insertBefore(a, nav.firstChild);
+})();
 </script>
 </body>
 </html>
